@@ -1,5 +1,6 @@
 # kgo 快速的Go开发工具简易工具集
 ![GitHub](https://img.shields.io/github/license/ccpwcn/kgo)
+![GitHub tests (latest SemVer)](https://img.shields.io/badge/tests-passed-brightgreen)
 ![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/ccpwcn/kgo/go.yml)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ccpwcn/kgo)
 ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/ccpwcn/kgo)
