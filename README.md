@@ -1,7 +1,14 @@
-# 说明
-kgo的意思是Go语言开发中可以快速直接上手使用的工具集，想来想去，取了这么一个简单易用的名字。
+# kgo 快速的Go开发工具简易工具集
+![GitHub](https://img.shields.io/github/license/ccpwcn/kgo)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/ccpwcn/kgo/go.yml)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ccpwcn/kgo)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/ccpwcn/kgo)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ccpwcn/kgo)
 
-> 本工具集仅依赖Go SDK，暂时不考虑依赖其他第三方
+
+想来想去，取了这么一个简单易用的名字，把一些常见的功能放上去，免得在各个项目中分别写一遍，同时开源出来，希望给同是从事Golang开发的朋友们有一丢丢小小的帮助。
+
+> 本工具集仅依赖Go SDK，暂时不考虑依赖其他第三方。
 
 # 前置条件
 因为其中使用到了泛型，所以需要在Go 1.18以上版本中运行
