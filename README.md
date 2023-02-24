@@ -20,6 +20,7 @@
 - [x] 字符串相关操作
 - [ ] Map相关操作
 - [x] 结构体相关操作
+- [x] 雪花算法
 
 # 引入和安装
 非常简单，一个指令搞定：
@@ -29,3 +30,31 @@ go get -u github.com/ccpwcn/kgo
 
 # 使用方法
 请查看单元测试，那里就是测试代码，或者直接查看源码，都是非常简单的引用类，后面东西多了，复杂了，我再加上专门的使用说明文档吧。
+
+# 雪花算法性能表现
+为了确保在生产环境使用没有问题，我特意写了一个性能测试，好好对雪花算法进行了压力测试。
+在PowerShell中执行的测试命令：
+```shell
+go test -v -bench="BenchmarkSnowflake_Concurrent_Id" -run=none -count=10 -benchmem
+```
+命令输出：
+```text
+goos: windows
+goarch: amd64
+pkg: github.com/ccpwcn/kgo
+cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+BenchmarkSnowflake_Concurrent_Id
+BenchmarkSnowflake_Concurrent_Id-8             9         217772189 ns/op        21733468 B/op     625873 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         231429490 ns/op        22388100 B/op     671228 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         231598560 ns/op        22293514 B/op     671233 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         230639500 ns/op        22323937 B/op     671239 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            12         292305067 ns/op        31733692 B/op     761012 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         236379090 ns/op        22452506 B/op     671243 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8             9         212681622 ns/op        21538135 B/op     625780 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         232043890 ns/op        22591533 B/op     671354 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         233019430 ns/op        22484507 B/op     671258 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         234118470 ns/op        22525298 B/op     671292 allocs/op
+PASS
+ok      github.com/ccpwcn/kgo   24.862s
+```
+表现很是稳定。
