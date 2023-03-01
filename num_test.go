@@ -1,6 +1,9 @@
 package kgo
 
-import "testing"
+import (
+	"strconv"
+	"testing"
+)
 
 func TestNumJoinStr(t *testing.T) {
 	resources1 := map[string][]int{
@@ -30,6 +33,23 @@ func TestNumJoinStr(t *testing.T) {
 	for expected, src := range resources2 {
 		if actual := NumJoinStr(src); actual != expected {
 			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+		}
+	}
+}
+
+func TestNums2Strings(t *testing.T) {
+	resources := [][]int{
+		{1, 2, 3},
+		{10, 20, 30},
+		{100, 200, 300},
+		{1001, 2002, 3003},
+	}
+	for i, expected := range resources {
+		actuals := Nums2Strings(expected)
+		for j, actual := range actuals {
+			if actual != strconv.FormatInt(int64(resources[i][j]), 10) {
+				t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			}
 		}
 	}
 }
