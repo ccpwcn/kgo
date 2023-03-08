@@ -16,7 +16,7 @@
 
 # 功能目录
 - [x] 目录文件相关操作
-  - GetExeDire 获得可执行程序所在目录
+  - GetExeDir 获得可执行程序所在目录
   - GetWorkDir 获得工作目录
   - IsExists 文件是否存在
   - MustRead 读取一个文件内容到[]byte中，确定文件很小时，直接使用这个方法，很省事
