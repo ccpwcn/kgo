@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 )
 
-// GetExeDire 获得可执行程序所在目录的绝对完整路径
-func GetExeDire() string {
+// GetExeDir 获得可执行程序所在目录的绝对完整路径
+func GetExeDir() string {
 	ex, err := os.Executable()
 	if err != nil {
 		panic(err)
