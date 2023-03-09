@@ -81,6 +81,7 @@ func (receiver *SimpleLocalCache) SetWithTime(key string, value interface{}, fut
 
 func (receiver *SimpleLocalCache) Delete(key string) {
 	receiver.container.Delete(key)
+	atomic.AddInt64(&receiver.usedCount, -1)
 }
 
 // Exists 判断缓存是否存在
