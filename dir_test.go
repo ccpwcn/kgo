@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"runtime"
 	"testing"
+	"time"
 )
 
 func TestGetWorkDir(t *testing.T) {
@@ -78,6 +79,19 @@ func TestMustRead(t *testing.T) {
 		}
 		if err := f.Close(); err != nil {
 			t.Errorf("write string content into testing file %s done, but delete temp file failed, %+v", f.Name(), err)
+		}
+	}
+}
+
+func TestDirectTempFile(t *testing.T) {
+	if f, err := DirectTempFile(".txt"); err != nil {
+		t.Errorf("DirectTempFile() error %v", err)
+	} else {
+		t.Log(f.Name())
+		if n, err := f.WriteString("中文，测试，TestDirectTempFile，" + time.Now().String()); err != nil {
+			t.Errorf("WriteString() error %v", err)
+		} else {
+			t.Log(f.Name(), "written", n, "bytes")
 		}
 	}
 }

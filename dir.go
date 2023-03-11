@@ -3,7 +3,9 @@ package kgo
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 )
 
 // GetExeDir 获得可执行程序所在目录的绝对完整路径
@@ -37,4 +39,20 @@ func MustRead(filename string) []byte {
 		panic(fmt.Sprintf("读取文件 %s 出现错误：%+v", filename, err))
 	}
 	return b
+}
+
+func DirectTempFile(extName string) (file *os.File, err error) {
+	dir := os.TempDir()
+	file, err = os.CreateTemp(dir, "kgo_temp_*"+extName)
+	// 程序退出时删除这个临时文件，对于服务器端程序来说，这个机制是有意义的，对于客户端一般普通应用程序来说，这个机制没什么用
+	go func() {
+		quit := make(chan os.Signal)
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		// 同步阻塞，静待退出信号
+		<-quit
+		if err := file.Close(); err == nil {
+			_ = os.Remove(file.Name())
+		}
+	}()
+	return file, err
 }
