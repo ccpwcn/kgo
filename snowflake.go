@@ -58,11 +58,21 @@ func InitSnowflake(workerId int64, dataCenterId int64) (err error) {
 	}
 }
 
-type IdType interface {
-	string | int64
+func SnowflakeId() int64 {
+	if snowflakeInstance == nil {
+		instanceMutex.Lock()
+		if snowflakeInstance != nil {
+			instanceMutex.Unlock()
+			return snowflakeInstance.nextVal()
+		}
+		defer instanceMutex.Unlock()
+		return snowflakeInstance.nextVal()
+	} else {
+		return snowflakeInstance.nextVal()
+	}
 }
 
-func SnowflakeId[T IdType]() (id T) {
+func GetSnowflakeId[T string | int64]() (id T) {
 	var v interface{}
 	if snowflakeInstance == nil {
 		instanceMutex.Lock()
