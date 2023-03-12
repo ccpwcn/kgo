@@ -3,6 +3,7 @@ package kgo
 import (
 	"errors"
 	"fmt"
+	"reflect"
 	"sync"
 	"time"
 )
@@ -57,18 +58,30 @@ func InitSnowflake(workerId int64, dataCenterId int64) (err error) {
 	}
 }
 
-func SnowflakeId() int64 {
+type IdType interface {
+	string | int64
+}
+
+func SnowflakeId[T IdType]() (id T) {
+	var v interface{}
 	if snowflakeInstance == nil {
 		instanceMutex.Lock()
 		if snowflakeInstance != nil {
 			instanceMutex.Unlock()
-			return snowflakeInstance.nextVal()
+			v = snowflakeInstance.nextVal()
 		}
 		defer instanceMutex.Unlock()
-		return snowflakeInstance.nextVal()
+		v = snowflakeInstance.nextVal()
 	} else {
-		return snowflakeInstance.nextVal()
+		v = snowflakeInstance.nextVal()
 	}
+	t := reflect.TypeOf(id)
+	if t.Kind() == reflect.String {
+		reflect.ValueOf(&id).Elem().SetString(fmt.Sprintf("%+v", v))
+	} else if t.Kind() == reflect.Int64 {
+		reflect.ValueOf(&id).Elem().SetInt(v.(int64))
+	}
+	return id
 }
 
 func (s *snowflake) nextVal() int64 {
