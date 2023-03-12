@@ -52,7 +52,11 @@ go get -u github.com/ccpwcn/kgo
 
 # 雪花算法性能表现
 为了确保在生产环境使用没有问题，我特意写了一个性能测试，好好对雪花算法进行了压力测试。
-在PowerShell中执行的测试命令：
+
+## 非泛型接口
+此接口只会返回int64类型的ID。具体使用方法参见`[snowflake_test.go](snowflake_test.go)`中的代码示例。
+
+测试方法：在PowerShell中执行的测试命令：
 ```shell
 go test -v -bench="BenchmarkSnowflake_Concurrent_Id" -run=none -count=10 -benchmem
 ```
@@ -63,28 +67,64 @@ goarch: amd64
 pkg: github.com/ccpwcn/kgo                    
 cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
 BenchmarkSnowflake_Concurrent_Id              
-BenchmarkSnowflake_Concurrent_Id-8                    10         228476450 ns/op        24371260 B/op     893551 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    10         221438730 ns/op        24255018 B/op     893571 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    10         228759660 ns/op        24163129 B/op     893506 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    10         224021280 ns/op        24152733 B/op     893484 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    12         282877567 ns/op        33124897 B/op    1027776 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    12         282631367 ns/op        33600299 B/op    1027714 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    12         282288167 ns/op        33314116 B/op    1027732 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    10         221747070 ns/op        24494428 B/op     893501 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    12         284988817 ns/op        33560668 B/op    1027819 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8                    12         282686433 ns/op        33517448 B/op    1027905 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String                                                                                   
-BenchmarkSnowflake_Concurrent_Id_String-8             12         352885200 ns/op        38611372 B/op    1161149 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         273024470 ns/op        28924257 B/op    1004706 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         290659680 ns/op        28560619 B/op    1004655 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         276047140 ns/op        28892588 B/op    1004743 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8              8         249127200 ns/op        26594543 B/op     847427 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         288484240 ns/op        29090812 B/op    1004658 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         304520150 ns/op        28779200 B/op    1004660 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         269651730 ns/op        28522777 B/op    1004678 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         276155210 ns/op        28976923 B/op    1004669 allocs/op
-BenchmarkSnowflake_Concurrent_Id_String-8             10         281306900 ns/op        28545998 B/op    1004693 allocs/op
-PASS
-ok      github.com/ccpwcn/kgo   59.227s
+BenchmarkSnowflake_Concurrent_Id-8             9         203077967 ns/op        21983367 B/op     625820 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            12         277161517 ns/op        31229477 B/op     761023 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8             9         204514756 ns/op        21902075 B/op     625815 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            12         268109500 ns/op        30850743 B/op     761026 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         220143410 ns/op        22856056 B/op     671238 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8             9         227427922 ns/op        21570741 B/op     625823 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         245171650 ns/op        22504872 B/op     671258 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         232327030 ns/op        22703912 B/op     671208 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8             9         223790600 ns/op        21771869 B/op     625841 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8            10         239567270 ns/op        23161156 B/op     671290 allocs/op
+PASS                                                                                                              
+ok      github.com/ccpwcn/kgo   24.803s
 ```
-表现很是稳定。
+
+## 泛型接口
+泛型接口支持返回int64和string两种类型的ID，你可以在调用函数的时候指定返回类型，具体调用代码参见`[snowflake_generic_test.go](snowflake_generic_test.go)`中的代码示例。
+
+测试方法：在PowerShell中执行的测试命令：
+```shell
+go test -v -bench="Benchmark_GenericSnowflake_Concurrent_Id" -run=none -count=10 -benchmem
+```
+命令输出：
+```text
+cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+Benchmark_GenericSnowflake_Concurrent_Id
+Benchmark_GenericSnowflake_Concurrent_Id-8                    10         224993810 ns/op        24819956 B/op     893709 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    12         282375483 ns/op        32965658 B/op    1027759 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    12         283087400 ns/op        33369010 B/op    1027736 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    12         287084958 ns/op        33401450 B/op    1027784 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    12         284687817 ns/op        33059180 B/op    1027716 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    12         287791083 ns/op        32944784 B/op    1027756 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    10         234368130 ns/op        24079393 B/op     893518 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    10         229153660 ns/op        24258326 B/op     893513 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    12         292083508 ns/op        33392757 B/op    1027721 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id-8                    10         230679260 ns/op        24353888 B/op     893491 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         278951190 ns/op        28652905 B/op    1004702 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8              8         248918450 ns/op        26022041 B/op     847370 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         275623760 ns/op        28527036 B/op    1004687 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         280000980 ns/op        28835009 B/op    1004686 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         279923380 ns/op        29070018 B/op    1004786 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         294371500 ns/op        28708047 B/op    1004654 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         276980950 ns/op        28606474 B/op    1004658 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             12         354999700 ns/op        39017543 B/op    1161183 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             12         356444367 ns/op        38855564 B/op    1161128 allocs/op
+Benchmark_GenericSnowflake_Concurrent_Id_String-8             10         281144360 ns/op        28855772 B/op    1004697 allocs/op
+PASS
+ok      github.com/ccpwcn/kgo   62.156s
+```
+
+## 综合性能
+经过多次冷启动测试和热启动测试，有如下结论：
+1. 总体上各接口的综合性能表现很是稳定，不会有明显的波动。
+2. 非泛型返回int64类型的ID是最快的。
+3. 泛型int64类型ID接口比非泛型接口慢不到5%，可以忽略不计。这也从侧面反应出Golang的泛型设计还是非常优秀的，性能损失非常小。
+4. 泛型string类型ID接口比泛型int64接口慢约15%到18%，比非泛型ID接口慢20%。这也可以理解，int64类型的大小是确定的，它在栈上，string类型对于程序来说大小是不确定的，它在堆上，自然就慢了。
+
+综合一张图如下所示：
+![雪花算法性能分析.png](assets/snowflake_algorithm_performance_analysis.png)
+
+> 之所以提供string类型ID的方法，还是为了便于一些场合性能要求不那么高，却要以string类型保存ID的地方，就不必非常麻烦的每次都要转换一下或者自己再封装一下了。
