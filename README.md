@@ -59,21 +59,32 @@ go test -v -bench="BenchmarkSnowflake_Concurrent_Id" -run=none -count=10 -benchm
 命令输出：
 ```text
 goos: windows
-goarch: amd64
-pkg: github.com/ccpwcn/kgo
+goarch: amd64                                 
+pkg: github.com/ccpwcn/kgo                    
 cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
-BenchmarkSnowflake_Concurrent_Id
-BenchmarkSnowflake_Concurrent_Id-8             9         217772189 ns/op        21733468 B/op     625873 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         231429490 ns/op        22388100 B/op     671228 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         231598560 ns/op        22293514 B/op     671233 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         230639500 ns/op        22323937 B/op     671239 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            12         292305067 ns/op        31733692 B/op     761012 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         236379090 ns/op        22452506 B/op     671243 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8             9         212681622 ns/op        21538135 B/op     625780 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         232043890 ns/op        22591533 B/op     671354 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         233019430 ns/op        22484507 B/op     671258 allocs/op
-BenchmarkSnowflake_Concurrent_Id-8            10         234118470 ns/op        22525298 B/op     671292 allocs/op
+BenchmarkSnowflake_Concurrent_Id              
+BenchmarkSnowflake_Concurrent_Id-8                    10         228476450 ns/op        24371260 B/op     893551 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    10         221438730 ns/op        24255018 B/op     893571 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    10         228759660 ns/op        24163129 B/op     893506 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    10         224021280 ns/op        24152733 B/op     893484 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    12         282877567 ns/op        33124897 B/op    1027776 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    12         282631367 ns/op        33600299 B/op    1027714 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    12         282288167 ns/op        33314116 B/op    1027732 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    10         221747070 ns/op        24494428 B/op     893501 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    12         284988817 ns/op        33560668 B/op    1027819 allocs/op
+BenchmarkSnowflake_Concurrent_Id-8                    12         282686433 ns/op        33517448 B/op    1027905 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String                                                                                   
+BenchmarkSnowflake_Concurrent_Id_String-8             12         352885200 ns/op        38611372 B/op    1161149 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         273024470 ns/op        28924257 B/op    1004706 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         290659680 ns/op        28560619 B/op    1004655 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         276047140 ns/op        28892588 B/op    1004743 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8              8         249127200 ns/op        26594543 B/op     847427 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         288484240 ns/op        29090812 B/op    1004658 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         304520150 ns/op        28779200 B/op    1004660 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         269651730 ns/op        28522777 B/op    1004678 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         276155210 ns/op        28976923 B/op    1004669 allocs/op
+BenchmarkSnowflake_Concurrent_Id_String-8             10         281306900 ns/op        28545998 B/op    1004693 allocs/op
 PASS
-ok      github.com/ccpwcn/kgo   24.862s
+ok      github.com/ccpwcn/kgo   59.227s
 ```
 表现很是稳定。
