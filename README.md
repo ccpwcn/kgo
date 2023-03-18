@@ -146,41 +146,28 @@ ok      github.com/ccpwcn/kgo   62.156s
 ### 5.2.1 常规顺序调用生成ID效率
 测试命令：
 ```shell
-go test -v -run ".+Uuid.+"
+go test -v -run ".+Uuid.*"
 ```
 执行输出：
 ```text
 === RUN   Test_Uuid
-    uuid_test.go:15: db0cce71-ccbf-49a0-9aa4-a1f1c8ea00ce
-    uuid_test.go:15: f0bff827-6209-4f5f-ba4b-c199bb46ee7f
-    uuid_test.go:15: d29009af-e8cd-4d04-bd31-f9860573126d
-    uuid_test.go:15: b0170d76-39f5-442c-9fdf-8e89d2222ccf
-    uuid_test.go:15: 550832a2-909a-4781-a0cf-fedd7029feab
-    uuid_test.go:15: 51276ff7-7220-42e9-95a2-6900cf0058e9
-    uuid_test.go:15: 211ca0b8-de71-44be-a7e4-2598f4afaed4
-    uuid_test.go:15: 084ff282-cf4c-4d53-bfb9-c31afe241b1d
-    uuid_test.go:15: 16faca18-567e-47e4-8ccb-d10abcd8458a
---- PASS: Test_Uuid (0.00s)
+    uuid_test.go:15: 10905b46-d928-498f-9d09-e84e6610d91d
+    uuid_test.go:15: 0a0d7f97-a3e9-49f9-b8d1-a1b86fbb0012
+    uuid_test.go:15: 39f536ce-b28b-46bb-a08f-c27982d98fa4
+    uuid_test.go:15: e02af045-1fab-4695-bcc0-0b75547dca9b
+--- PASS: Test_Uuid (0.01s)
 === RUN   Test_SimpleUuid
-    uuid_test.go:28: 089b8dbaee8148fbb0f154fd38ddf45b
-    uuid_test.go:28: 61c786aae53b4e8b92b2717d47455ede
-    uuid_test.go:28: 3c5a5e24f92842bf91eef4c7920d80f5
-    uuid_test.go:28: e6b8e6ff6239402099d93f2bffb64b65
-    uuid_test.go:28: 497bbd0332f14961aa73251cfb99079e
-    uuid_test.go:28: 6bfcfef7e7ca42c0a800bfbbce722a0f
-    uuid_test.go:28: aa9949818d80487593610afb52a5cde0
-    uuid_test.go:28: 4888c35c271e4a6ab43731724bc775c3
-    uuid_test.go:28: 04bdd8d19bed4360ad24d12c4ddcb514
+    uuid_test.go:28: f272740c16b54447a1afc8e966da7c31
+    uuid_test.go:28: 4ddf818bac1344c2aa556948d7cee602
+    uuid_test.go:28: b2525c24ecb14573a4db256ff9a92259
+    uuid_test.go:28: 490180ab69c34bd59705f2599db4be5c
 --- PASS: Test_SimpleUuid (0.00s)
 === RUN   Test_Uuid_Million
---- PASS: Test_Uuid_Million (0.76s)
+--- PASS: Test_Uuid_Million (1.51s)
 === RUN   Test_SimpleUuid_Million
---- PASS: Test_SimpleUuid_Million (0.60s)
-=== RUN   Test_Uuid_Billion
---- PASS: Test_Uuid_Billion (84.02s)
-=== RUN   Test_SimpleUuid_Billion
---- PASS: Test_SimpleUuid_Billion (75.07s)
+--- PASS: Test_SimpleUuid_Million (1.28s)
 PASS
+ok      github.com/ccpwcn/kgo   2.914s
 ```
 
 ### 5.2.2 带连接横线的标准UUID性能
@@ -237,10 +224,10 @@ ok      github.com/ccpwcn/kgo   474.448s
 
 ### 5.2.4综合性能比较
 经过多次测试，综合性能指标如下：
-- 常规测试，生成100万个ID耗时约700毫秒，每7毫秒生成1万个ID，性能是相当强悍了。
-- 压力测试，生成5000万个标准UUID形式的ID耗时约80秒，高并发每秒可生成约62万个标准ID。
-- 压力测试，生成5000万个无连接线的最简唯一ID耗时约75秒，高并发每秒可生成66万个无连接线的简单ID。
-- 不带连接线的简单ID比标准UUID形式的ID性能强10%到20%。
+- 常规测试，生成200万个ID耗时约最多1.5秒，性能是相当强悍了。
+- 压力测试，生成500万个标准UUID形式的ID耗时约54秒，高并发每秒可生成约92万个标准ID。
+- 压力测试，生成500万个无连接线的最简唯一ID耗时约52秒，高并发每秒可生成96万个无连接线的简单ID。
+- 不带连接线的简单ID比标准UUID形式的ID性能强约10%。
 - 在性能测试中，加入了`sync.Map`用于保证海量的ID仍然是唯一的，不会重复。在实践中，如果没有这个，生成ID的速度可以更快，所以能胜任任何场景了。
 
 🍓请允许自我吹嘘一下：以如此强悍的性能生成唯一ID，太牛了，以后就它了！
