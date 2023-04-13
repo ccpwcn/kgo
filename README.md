@@ -38,7 +38,9 @@
   - Exists 判断缓存项是否存在
   - Size 获得缓存大小
 - [x] Map相关操作
-  - HasKey 是否拥有某个Key 
+  - HasKey 是否拥有某个Key
+- [x] Slice切片相关
+  - SlicePagination 切片分页，返回一个分好页的二维数组，可指定页大小 
 - [x] 结构体相关操作
   - JoinStructsField 将任意结构体数组中的指定字段的值使用英文逗号拼接成一个字符串，例如：用户列表中，所有用户ID拼成一个字符串
   - PickStructsField 将任意结构体数组中的指定字段的值提取出来形成一个保持原类型的数组，例如：用户列表中，所有用户ID提取成一个用户ID数组
