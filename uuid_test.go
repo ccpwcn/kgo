@@ -18,6 +18,36 @@ func Test_Uuid(t *testing.T) {
 	}
 }
 
+func Test_SimpleUuid_BillionIdMustNotDuplicated(t *testing.T) {
+	const (
+		total     = 1_000_000_000
+		pageSize  = 1_000_000
+		pageCount = total/pageSize + 1
+	)
+	var (
+		buffer sync.Map
+		wg     sync.WaitGroup
+		task   = func(page int) {
+			defer wg.Done()
+			for i := 0; i < pageSize; i++ {
+				id := SimpleUuid()
+				if _, ok := buffer.Load(id); ok {
+					t.Errorf("duplicated UUID %s", id)
+				}
+				buffer.Store(id, true)
+				if page%10_000_000 == 0 {
+					t.Logf("page %d has been validated OK!", page)
+				}
+			}
+		}
+	)
+	for page := 1; page <= pageCount; page++ {
+		wg.Add(1)
+		go task(page)
+	}
+	wg.Wait()
+}
+
 func Test_SimpleUuid(t *testing.T) {
 	m := make(map[string]bool)
 	for i := 1; i < 5; i++ {
