@@ -39,6 +39,13 @@
   - Size 获得缓存大小
 - [x] Map相关操作
   - HasKey 是否拥有某个Key
+- [x] 自定义Set（拥有的元素不可重复，类似于Java中的HashSet），添加的元素必须是可比较的，即实现了标准接口中的comparable，这也可以理解，如果元素不可比较，怎么知道是否重复是否已经存在了呢？
+  - Add 添加元素
+  - Remove 删除元素
+  - Clear 清空所有元素
+  - Contains 是否在已经存在的元素中
+  - Len 获得Set集合中元素的数量
+  - Empty 判断Set元素是否是空的
 - [x] Slice切片相关
   - SlicePagination 切片分页，返回一个分好页的二维数组，可指定页大小 
 - [x] 结构体相关操作
