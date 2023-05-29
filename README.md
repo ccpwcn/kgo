@@ -8,6 +8,7 @@
   ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/ccpwcn/kgo)
   ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/ccpwcn/kgo)
   ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ccpwcn/kgo)
+  [![Goproxy.cn](https://goproxy.cn/stats/github.com/ccpwcn/kgo/badges/download-count.svg)](https://goproxy.cn)
 
 </div>
 
