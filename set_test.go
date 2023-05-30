@@ -1,6 +1,9 @@
 package kgo
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 func Test_SetInstance(t *testing.T) {
 	s := NewSet[string]()
@@ -65,5 +68,22 @@ func Test_SetToArray(t *testing.T) {
 	}
 	if contain != 3 {
 		t.Error("toArray failed")
+	}
+}
+
+func Test_MarshalAndUnMarshal(t *testing.T) {
+	newSet := NewSet[string]()
+	oldSet := NewSet[string]()
+	oldSet.Add("1")
+	oldSet.Add("2")
+	oldSet.Add("3")
+	if b, err := json.Marshal(oldSet); err != nil {
+		t.Error("marshal set error", err)
+	} else if err = json.Unmarshal(b, &newSet); err != nil {
+		t.Error("unmarshal set error", err)
+	} else if newSet.Len() != oldSet.Len() {
+		t.Errorf("len not equal, old len %v, new len %v", oldSet.Len(), newSet.Len())
+	} else if !newSet.Contains("1") || !newSet.Contains("2") || !newSet.Contains("3") {
+		t.Error("element lost")
 	}
 }
