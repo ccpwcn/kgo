@@ -1,5 +1,9 @@
 package kgo
 
+import (
+	"encoding/json"
+)
+
 type Set[T comparable] struct {
 	m map[T]struct{}
 }
@@ -48,4 +52,16 @@ func (s *Set[T]) ToArray() []T {
 		items = append(items, k)
 	}
 	return items
+}
+
+func (s *Set[T]) MarshalText() (data []byte, err error) {
+	return json.Marshal(s.ToArray())
+}
+
+func (s *Set[T]) UnmarshalText(data []byte) (err error) {
+	var items []T
+	err = json.Unmarshal(data, &items)
+	s.m = make(map[T]struct{})
+	s.Add(items...)
+	return err
 }
