@@ -12,8 +12,8 @@ func NewSet[T comparable](items ...T) *Set[T] {
 	return s
 }
 
-func (s *Set[T]) Add(item ...T) {
-	for _, item := range item {
+func (s *Set[T]) Add(items ...T) {
+	for _, item := range items {
 		s.m[item] = struct{}{}
 	}
 }
@@ -41,4 +41,11 @@ func (s *Set[T]) Len() int {
 
 func (s *Set[T]) Empty() bool {
 	return len(s.m) == 0
+}
+func (s *Set[T]) ToArray() []T {
+	var items = make([]T, 0, s.Len())
+	for k := range s.m {
+		items = append(items, k)
+	}
+	return items
 }

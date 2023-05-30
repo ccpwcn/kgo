@@ -7,4 +7,5 @@ type Collection[T comparable] interface {
 	Contains(item T) bool
 	Len() int
 	Empty() bool
+	ToArray() []T
 }

@@ -50,3 +50,20 @@ func Test_SetLenAndEmpty(t *testing.T) {
 		t.Error("Expected empty, but not, it length ", s.Len())
 	}
 }
+
+func Test_SetToArray(t *testing.T) {
+	s := NewSet[string]()
+	s.Add("1")
+	s.Add("2")
+	s.Add("3")
+	items := s.ToArray()
+	contain := 0
+	for _, item := range items {
+		if item == "1" || item == "2" || item == "3" {
+			contain++
+		}
+	}
+	if contain != 3 {
+		t.Error("toArray failed")
+	}
+}
