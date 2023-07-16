@@ -40,6 +40,7 @@
   - Size 获得缓存大小
 - [x] Map相关操作
   - HasKey 是否拥有某个Key
+  - MapKeys 将一个Map的所有Key转换成数组返回
 - [x] 自定义Set（拥有的元素不可重复，类似于Java中的HashSet），添加的元素必须是可比较的，即实现了标准接口中的comparable，这也可以理解，如果元素不可比较，怎么知道是否重复是否已经存在了呢？
   - Add 添加元素
   - Remove 删除元素
