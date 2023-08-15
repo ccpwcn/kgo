@@ -1,5 +1,10 @@
 package kgo
 
+import "reflect"
+
+type ChsSort interface {
+}
+
 // SlicePagination 对一个切片进行内存分页
 func SlicePagination[T any](data []T, pageSize int) (paged [][]T) {
 	if data == nil {
@@ -25,4 +30,31 @@ func SlicePagination[T any](data []T, pageSize int) (paged [][]T) {
 		}
 	}
 	return paged
+}
+
+func Contains[T any](data []T, element T) bool {
+	for _, datum := range data {
+		if reflect.DeepEqual(datum, element) {
+			return true
+		}
+	}
+	return false
+}
+
+func ContainsAll[T any](data []T, elements []T) bool {
+	for _, element := range elements {
+		if !Contains(data, element) {
+			return false
+		}
+	}
+	return true
+}
+
+func ContainsAny[T any](data []T, elements []T) bool {
+	for _, element := range elements {
+		if Contains(data, element) {
+			return true
+		}
+	}
+	return false
 }

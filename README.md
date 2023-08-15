@@ -50,6 +50,9 @@
   - Empty 判断Set元素是否是空的
 - [x] Slice切片相关
   - SlicePagination 切片分页，返回一个分好页的二维数组，可指定页大小 
+  - Contains 包含某个元素
+  - ContainsAll 包含指定元素
+  - ContainsAny 包含任意元素
 - [x] 结构体相关操作
   - JoinStructsField 将任意结构体数组中的指定字段的值使用英文逗号拼接成一个字符串，例如：用户列表中，所有用户ID拼成一个字符串
   - PickStructsField 将任意结构体数组中的指定字段的值提取出来形成一个保持原类型的数组，例如：用户列表中，所有用户ID提取成一个用户ID数组
