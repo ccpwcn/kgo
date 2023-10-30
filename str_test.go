@@ -71,3 +71,28 @@ func TestJoinElements(t *testing.T) {
 		}
 	}
 }
+
+func TestB2S(t *testing.T) {
+	b := []byte{'A', 'B', 'C'}
+	s := B2S(b)
+	if s != "ABC" {
+		t.Fatalf("预期 %+v，实际值：%+v", "ABC", s)
+	}
+}
+
+func TestS2B(t *testing.T) {
+	s := "!@#"
+	b := S2B(s)
+	if len(b) != 3 || s[0] != '!' || s[1] != '@' || s[2] != '#' {
+		t.Fatalf("预期 %+v，实际值：%+v", []byte{'!', '@', '#'}, b)
+	}
+}
+
+func TestS2B2S(t *testing.T) {
+	s := "!@#"
+	b := S2B(s)
+	s2 := B2S(b)
+	if s2 != s {
+		t.Fatalf("预期 %+v，实际值：%+v", s, s2)
+	}
+}
