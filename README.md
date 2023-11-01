@@ -63,6 +63,12 @@
 - [x] UUID 高性能UUID
   - Uuid 通用方法，自带缓冲池，不需要初始化，随时获得ID，多goroutine并发安全
   - SimpleUuid 去除横线方法，自带缓冲池，不需要初始化，到处随时获得ID，多goroutine并发安全，推荐👍👍👍
+- [x] 时间函数
+  - NowStr 取得通用的当前时间，不必再格式化了
+  - MonthStartTime 取得本月的开始时间
+  - MonthEndTime 取得本月的结束时间
+  - AnyMonthStartTime 以当前时间为基点，取任意月的开始时间（比如上个月、下个月，用正负数控制，与Go标准库的API用法保持一致），这在一些时间计算的时候很有用
+  - AnyMonthEndTime 以当前时间为基点，取任意月的的结束时间（比如上个月、下个月，用正负数控制，与Go标准库的API用法保持一致），这在一些时间计算的时候很有用
 - [x] 杂项
   - RunFuncName 获得当前代码所在函数名 
 
