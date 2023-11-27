@@ -32,6 +32,7 @@ func SlicePagination[T any](data []T, pageSize int) (paged [][]T) {
 	return paged
 }
 
+// Contains 一个切片是否包含指定元素
 func Contains[T any](data []T, element T) bool {
 	for _, datum := range data {
 		if reflect.DeepEqual(datum, element) {
@@ -41,6 +42,7 @@ func Contains[T any](data []T, element T) bool {
 	return false
 }
 
+// ContainsAll 一个切片是否包含所有指定元素
 func ContainsAll[T any](data []T, elements []T) bool {
 	for _, element := range elements {
 		if !Contains(data, element) {
@@ -50,6 +52,7 @@ func ContainsAll[T any](data []T, elements []T) bool {
 	return true
 }
 
+// ContainsAny 一个切片是否包含任意指定元素
 func ContainsAny[T any](data []T, elements []T) bool {
 	for _, element := range elements {
 		if Contains(data, element) {
