@@ -201,3 +201,70 @@ func TestSliceGroupBy(t *testing.T) {
 		}
 	}
 }
+
+func TestCopyFieldsNormal(t *testing.T) {
+	type User struct {
+		Id  string
+		Age int
+	}
+	u1 := User{
+		Id:  "111",
+		Age: 10,
+	}
+	u2 := CopyFields[User, User](u1)
+	t.Logf("u1: %+v, u2: %+v", u1, u2)
+}
+
+func TestCopyFieldsIgnoreUnexportedField(t *testing.T) {
+	type User struct {
+		Id      string
+		Age     int
+		address string
+	}
+	u1 := User{
+		Id:      "111",
+		Age:     10,
+		address: "china",
+	}
+	u2 := CopyFields[User, User](u1)
+	t.Logf("u1: %+v, u2: %+v", u1, u2)
+}
+
+func TestCopyFieldsIgnoreSomeField(t *testing.T) {
+	type User struct {
+		Id      string
+		Age     int
+		address string
+	}
+	u1 := User{
+		Id:      "111",
+		Age:     10,
+		address: "china",
+	}
+	u2 := CopyFields[User, User](u1, "Age")
+	t.Logf("u1: %+v, u2: %+v", u1, u2)
+}
+
+func TestCopyFieldsComplex(t *testing.T) {
+	type Address struct {
+		Province string
+		City     string
+		County   string
+	}
+	type User struct {
+		Id      string
+		Age     int
+		Address Address
+	}
+	u1 := User{
+		Id:  "111",
+		Age: 10,
+		Address: Address{
+			Province: "陕西省",
+			City:     "西安市",
+			County:   "雁塔区",
+		},
+	}
+	u2 := CopyFields[User, User](u1)
+	t.Logf("u1: %+v, u2: %+v", u1, u2)
+}

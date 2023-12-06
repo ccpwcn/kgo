@@ -95,3 +95,57 @@ func SliceGroupBy[T any, KT comparable](data []T, fieldName string) map[KT][]T {
 	}
 	return m
 }
+
+// CopyFields 将一个结构体中的所有字段值全部复制到目标结构体中，可以指定忽略某些字段
+// 注意：如果你的字段是非指针类型，那么是值拷贝，如果你的字段是指针类型，那么是引用拷贝
+// 即：在字段是指针类型的情况下，即使复制值到目标结构体实例中了，修改源结构体实例的字段值，会影响目标结构体实例的值，因为是引用拷贝
+func CopyFields[SRC any, DST any](src SRC, ignore ...string) (dst DST) {
+	ignoreCount := len(ignore)
+	srcValue := reflect.ValueOf(src)
+	dstValue := reflect.ValueOf(&dst)
+	dstValue = dstValue.Elem()
+	for i := 0; i < srcValue.NumField(); i++ {
+		srcField := srcValue.Type().Field(i)
+		// 源中字段未导出，忽略
+		if !srcField.IsExported() {
+			continue
+		}
+		fieldName := srcValue.Type().Field(i).Name
+		if ignoreCount > 0 && Contains(ignore, fieldName) {
+			continue
+		}
+		srcFieldValue := srcValue.FieldByName(fieldName)
+		dstFieldValue := dstValue.FieldByName(fieldName)
+		df, ok := dstValue.Type().FieldByName(fieldName)
+		// 目标中字段不存在，忽略
+		if !ok {
+			continue
+		}
+		// 目标中字段未导出，忽略
+		if !df.IsExported() {
+			continue
+		}
+		// 类型不匹配，不进行复制
+		if srcFieldValue.Kind() != dstFieldValue.Kind() {
+			continue
+		}
+		// 复制值
+		if dstFieldValue.CanSet() {
+			dstFieldValue.Set(srcFieldValue)
+		}
+	}
+	return
+}
+
+// SetField 给任意结构体的任意字段设置一个新值
+func SetField(entity any, field string, newValue any) {
+	val := reflect.ValueOf(entity)
+	for val.Type().Kind() == reflect.Pointer {
+		val = val.Elem()
+	}
+	fv := val.FieldByName(field)
+	if !fv.CanSet() {
+		return
+	}
+	fv.Set(reflect.ValueOf(newValue))
+}
