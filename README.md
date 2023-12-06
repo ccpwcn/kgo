@@ -59,6 +59,7 @@
   - JoinStructsField 将任意结构体切片中的指定字段的值使用英文逗号拼接成一个字符串，例如：用户列表中，所有用户ID拼成一个字符串
   - PickStructsField 将任意结构体切片中的指定字段的值提取出来形成一个保持原类型的数组，例如：用户列表中，所有用户ID提取成一个用户ID数组
   - SliceGroupBy 将任何结构体切片切片中按指定字段的值提取出来进行分组，形成一个Map，例如对用户按类型分组，类型的值为Map的key，对应类型的所有用户集合为Map的Value
+  - CopyFields 复制结构体实例字段值到目标结构体实例，类似于Java中的BeanUtils.copyProperties(src, dst)工具类
 - [x] 雪花算法
   - 通用实现方法，初始化一次，到处随时获得ID，多goroutine并发安全
 - [x] UUID 高性能UUID
