@@ -34,6 +34,7 @@
   - JoinElements 将任意基本类型的数组使用英文逗号拼接成一个字符串
   - B2S byte切片转为string
   - S2B string转为byte切片
+  - MaskChineseName 中文姓名脱敏
 - [x] 本地缓存相关操作
   - Set 设置缓存项，支持仅设置缓存，也支持同时给缓存添加一个过期时间
   - Get 获得缓存内容

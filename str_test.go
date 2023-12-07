@@ -96,3 +96,39 @@ func TestS2B2S(t *testing.T) {
 		t.Fatalf("预期 %+v，实际值：%+v", s, s2)
 	}
 }
+
+func TestMaskChineseName(t *testing.T) {
+	name := "张三"
+	excepted := "张*"
+	actual := MaskChineseName(name)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseName1(t *testing.T) {
+	name := "张三一"
+	excepted := "张**"
+	actual := MaskChineseName(name)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseName2(t *testing.T) {
+	name := "张三三三"
+	excepted := "张***"
+	actual := MaskChineseName(name)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseName4(t *testing.T) {
+	name := "hello"
+	excepted := "h****"
+	actual := MaskChineseName(name)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
