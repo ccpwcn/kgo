@@ -66,3 +66,19 @@ func S2B(s string) (b []byte) {
 	bh.Len = sh.Len
 	return b
 }
+
+// MaskChineseName 中文姓名脱敏
+func MaskChineseName(name string) (masked string) {
+	size := len(name)
+	if size == 0 {
+		return ""
+	}
+	for i, n := range name {
+		if i == 0 {
+			masked = fmt.Sprintf("%c", n)
+		} else {
+			masked += "*"
+		}
+	}
+	return masked
+}
