@@ -35,6 +35,11 @@
   - B2S byte切片转为string
   - S2B string转为byte切片
   - MaskChineseName 中文姓名脱敏
+  - MaskChineseMobile 中国手机号脱敏
+  - MaskChineseIdCard 中国身份证号脱敏
+  - MaskChineseIdCard34 中国身份证号脱敏，MaskChineseMobile简化版，保留前3位后4位
+  - MaskChineseIdCard64 中国身份证号脱敏，MaskChineseMobile简化版，保留前6位后4位
+  - MaskChineseIdCard11 中国身份证号脱敏，MaskChineseMobile简化版，保留前1位后1位
 - [x] 本地缓存相关操作
   - Set 设置缓存项，支持仅设置缓存，也支持同时给缓存添加一个过期时间
   - Get 获得缓存内容
