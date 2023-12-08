@@ -101,6 +101,42 @@ func MaskChineseMobile(tel string) (masked string) {
 	return masked
 }
 
+// MaskChineseIdCard34 中国身份证号脱敏，仅支持18位身份证号，但是这足够了
+//
+// left 左侧保留几位
+// right 右边保留几位
+//
+// 示例 MaskChineseIdCard34("101101199010101234") 得到 101***********1234
+//
+// 请对输入的身份证号自行校验，否则可能触发意料之外的结果
+func MaskChineseIdCard34(idCard string) (masked string) {
+	return MaskChineseIdCard(idCard, 3, 4)
+}
+
+// MaskChineseIdCard64 中国身份证号脱敏，仅支持18位身份证号，但是这足够了
+//
+// left 左侧保留几位
+// right 右边保留几位
+//
+// 示例 MaskChineseIdCard64("101101199010101234") 得到 101101********1234
+//
+// 请对输入的身份证号自行校验，否则可能触发意料之外的结果
+func MaskChineseIdCard64(idCard string) (masked string) {
+	return MaskChineseIdCard(idCard, 6, 4)
+}
+
+// MaskChineseIdCard11 中国身份证号脱敏，仅支持18位身份证号，但是这足够了
+//
+// left 左侧保留几位
+// right 右边保留几位
+//
+// 示例 MaskChineseIdCard11("101101199010101234") 得到 1****************4
+//
+// 请对输入的身份证号自行校验，否则可能触发意料之外的结果
+func MaskChineseIdCard11(idCard string) (masked string) {
+	return MaskChineseIdCard(idCard, 1, 1)
+}
+
 // MaskChineseIdCard 中国身份证号脱敏，仅支持18位身份证号，但是这足够了
 //
 // left 左侧保留几位
