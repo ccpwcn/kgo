@@ -82,3 +82,44 @@ func MaskChineseName(name string) (masked string) {
 	}
 	return masked
 }
+
+// MaskChineseMobile 中国手机号脱敏
+//
+// 输入 13012345678 得到 130****5678 这是最常见的方式，为了简单省事，就不加参数了
+func MaskChineseMobile(tel string) (masked string) {
+	size := len(tel)
+	if size == 0 {
+		return ""
+	}
+	for i, n := range tel {
+		if i < 3 || i >= 7 {
+			masked += fmt.Sprintf("%c", n)
+		} else {
+			masked += "*"
+		}
+	}
+	return masked
+}
+
+// MaskChineseIdCard 中国身份证号脱敏，仅支持18位身份证号，但是这足够了
+//
+// left 左侧保留几位
+// right 右边保留几位
+//
+// 示例 MaskChineseIdCard("101101199010101234", 3, 4) 得到 101***********1234
+//
+// 请对输入的身份证号自行校验，否则可能触发意料之外的结果
+func MaskChineseIdCard(idCard string, left, right int) (masked string) {
+	size := len(idCard)
+	if size == 0 {
+		return ""
+	}
+	for i, n := range idCard {
+		if i < left || i >= 18-right {
+			masked += fmt.Sprintf("%c", n)
+		} else {
+			masked += "*"
+		}
+	}
+	return masked
+}

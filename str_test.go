@@ -132,3 +132,39 @@ func TestMaskChineseName4(t *testing.T) {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
+
+func TestMaskChineseMobile(t *testing.T) {
+	tel := "13012345678"
+	excepted := "130****5678"
+	actual := MaskChineseMobile(tel)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseIdCard(t *testing.T) {
+	idCard := "101101199010101234"
+	excepted := "101***********1234"
+	actual := MaskChineseIdCard(idCard, 3, 4)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseIdCard2(t *testing.T) {
+	idCard := "10110119901010123X"
+	excepted := "101***********123X"
+	actual := MaskChineseIdCard(idCard, 3, 4)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseIdCard3(t *testing.T) {
+	idCard := "10110119901010123x"
+	excepted := "101***********123x"
+	actual := MaskChineseIdCard(idCard, 3, 4)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
