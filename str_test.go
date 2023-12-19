@@ -136,7 +136,7 @@ func TestMaskChineseName4(t *testing.T) {
 func TestMaskChineseNameEx(t *testing.T) {
 	name := "张三"
 	excepted := "*三"
-	actual := MaskChineseNameEx(name, 1, 0)
+	actual := MaskChineseNameEx(name, 0, 1)
 	if actual != excepted {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
@@ -145,7 +145,7 @@ func TestMaskChineseNameEx(t *testing.T) {
 func TestMaskChineseNameEx1(t *testing.T) {
 	name := "张三一"
 	excepted := "*三一"
-	actual := MaskChineseNameEx(name, 1, 0)
+	actual := MaskChineseNameEx(name, 0, 2)
 	if actual != excepted {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
@@ -153,8 +153,8 @@ func TestMaskChineseNameEx1(t *testing.T) {
 
 func TestMaskChineseNameEx2(t *testing.T) {
 	name := "张三三三"
-	excepted := "*三三*"
-	actual := MaskChineseNameEx(name, 1, 1)
+	excepted := "*三三三"
+	actual := MaskChineseNameEx(name, 0, 3)
 	if actual != excepted {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
@@ -162,8 +162,8 @@ func TestMaskChineseNameEx2(t *testing.T) {
 
 func TestMaskChineseNameEx4(t *testing.T) {
 	name := "hello"
-	excepted := "*ell*"
-	actual := MaskChineseNameEx(name, 1, 1)
+	excepted := "*ello"
+	actual := MaskChineseNameEx(name, 0, 4)
 	if actual != excepted {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
