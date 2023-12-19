@@ -84,7 +84,7 @@ func MaskChineseName(name string) (masked string) {
 	return masked
 }
 
-// MaskChineseNameEx 中文姓名脱敏，指定的左右脱敏长度会被以星号取代
+// MaskChineseNameEx 中文姓名脱敏，可以指定左右保留字符数量
 // 示例：MaskChineseNameEx("张一二", 1, 1) => "*一*" 左边1位替代、右边1位替代
 func MaskChineseNameEx(name string, left, right int) (masked string) {
 	size := utf8.RuneCountInString(name)
@@ -94,9 +94,9 @@ func MaskChineseNameEx(name string, left, right int) (masked string) {
 	i := 0
 	for _, n := range name {
 		if i < left || i >= size-right {
-			masked += "*"
-		} else {
 			masked += fmt.Sprintf("%c", n)
+		} else {
+			masked += "*"
 		}
 		i++
 	}
