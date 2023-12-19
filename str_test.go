@@ -231,3 +231,30 @@ func TestMaskChineseIdCard3(t *testing.T) {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
+
+func TestMaskAnyString(t *testing.T) {
+	s := "一二三四五"
+	excepted := "一***五"
+	actual := MaskAnyString(s, 1, 1)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskAnyString1(t *testing.T) {
+	s := "一二三四五"
+	excepted := "一****"
+	actual := MaskAnyString(s, 1, 0)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskAnyString2(t *testing.T) {
+	s := "一二三四五"
+	excepted := "****五"
+	actual := MaskAnyString(s, 0, 1)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
