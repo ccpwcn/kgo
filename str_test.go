@@ -1,6 +1,9 @@
 package kgo
 
-import "testing"
+import (
+	"testing"
+	"unicode/utf8"
+)
 
 func TestClean(t *testing.T) {
 	resources := map[string]string{
@@ -164,6 +167,24 @@ func TestMaskChineseNameEx4(t *testing.T) {
 	name := "hello"
 	excepted := "*ello"
 	actual := MaskChineseNameEx(name, 0, 4)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseNameEx5(t *testing.T) {
+	name := "张一二"
+	excepted := "张*二"
+	actual := MaskChineseNameEx(name, 1, 1)
+	if actual != excepted {
+		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskChineseNameEx6(t *testing.T) {
+	name := "张一二"
+	excepted := "*一二"
+	actual := MaskChineseNameEx(name, 0, utf8.RuneCountInString(name)-1)
 	if actual != excepted {
 		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
 	}
