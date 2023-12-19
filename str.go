@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"unicode/utf8"
 	"unsafe"
 )
 
@@ -69,7 +70,7 @@ func S2B(s string) (b []byte) {
 
 // MaskChineseName 中文姓名脱敏
 func MaskChineseName(name string) (masked string) {
-	size := len(name)
+	size := utf8.RuneCountInString(name)
 	if size == 0 {
 		return ""
 	}
@@ -79,6 +80,24 @@ func MaskChineseName(name string) (masked string) {
 		} else {
 			masked += "*"
 		}
+	}
+	return masked
+}
+
+// MaskChineseNameEx 中文姓名脱敏
+func MaskChineseNameEx(name string, left, right int) (masked string) {
+	size := utf8.RuneCountInString(name)
+	if size == 0 {
+		return ""
+	}
+	i := 0
+	for _, n := range name {
+		if i < left || i >= size-right {
+			masked += "*"
+		} else {
+			masked += fmt.Sprintf("%c", n)
+		}
+		i++
 	}
 	return masked
 }

@@ -35,6 +35,7 @@
   - B2S byte切片转为string
   - S2B string转为byte切片
   - MaskChineseName 中文姓名脱敏
+  - MaskChineseNameEx 中文姓名脱敏扩展方法，可指定脱敏位，与身份证号不同，姓名脱敏函数中指定数量的字符会被以星号替代
   - MaskChineseMobile 中国手机号脱敏
   - MaskChineseIdCard 中国身份证号脱敏
   - MaskChineseIdCard34 中国身份证号脱敏，MaskChineseMobile简化版，保留前3位后4位

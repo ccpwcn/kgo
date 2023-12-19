@@ -102,7 +102,9 @@ func SliceGroupBy[T any, KT comparable](data []T, fieldName string) map[KT][]T {
 func CopyFields[SRC any, DST any](src SRC, ignore ...string) (dst DST) {
 	ignoreCount := len(ignore)
 	srcValue := reflect.ValueOf(src)
+	// 反射取值
 	dstValue := reflect.ValueOf(&dst)
+	// 去包装取实际类型
 	dstValue = dstValue.Elem()
 	for i := 0; i < srcValue.NumField(); i++ {
 		srcField := srcValue.Type().Field(i)
@@ -138,6 +140,7 @@ func CopyFields[SRC any, DST any](src SRC, ignore ...string) (dst DST) {
 }
 
 // SetField 给任意结构体的任意字段设置一个新值
+// newValue不可以传入反身过的值类型（即：不要传reflect.ValueOf(...)的结果），这会导致panic
 func SetField(entity any, field string, newValue any) {
 	val := reflect.ValueOf(entity)
 	for val.Type().Kind() == reflect.Pointer {
