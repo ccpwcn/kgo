@@ -192,6 +192,8 @@ func MaskChineseIdCard(idCard string, left, right int) (masked string) {
 // right 右边保留几位
 //
 // 示例 MaskAnyString("一二三四五", 1, 1) 得到 一***五
+//
+// 示例 MaskAnyString("一二三四五六七八九十", 3, 1) 得到 一二三******十
 func MaskAnyString(s string, left, right int) (masked string) {
 	size := utf8.RuneCountInString(s)
 	if size == 0 {

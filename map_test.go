@@ -1,7 +1,6 @@
 package kgo
 
 import (
-	"reflect"
 	"testing"
 )
 
@@ -42,11 +41,11 @@ func TestMapKeys(t *testing.T) {
 		want []K
 	}
 	tests := []testCase[string, int]{
-		{name: "string keys", args: args[string, int]{map[string]int{"a": 1, "b": 2, "c": 3}}, want: []string{"a", "b", "c"}},
+		{name: "string keys", args: args[string, int]{map[string]int{"a": 1, "b": 2, "c": 3}}, want: []string{"b", "a", "c"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MapKeys(tt.args.m); !reflect.DeepEqual(got, tt.want) {
+			if got := MapKeys(tt.args.m); !ContainsAll(got, tt.want) {
 				t.Errorf("MapKeys() = %v, want %v", got, tt.want)
 			}
 		})
