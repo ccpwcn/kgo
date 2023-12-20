@@ -25,7 +25,7 @@ func TestJoinElements(t *testing.T) {
 	}
 	for expected, src := range resources1 {
 		if actual := JoinElements(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 	var n1, n2, n3 = 1, 2, 3
@@ -34,7 +34,7 @@ func TestJoinElements(t *testing.T) {
 	}
 	for expected, src := range resources11 {
 		if actual := JoinElements(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 
@@ -43,7 +43,7 @@ func TestJoinElements(t *testing.T) {
 	}
 	for expected, src := range resources2 {
 		if actual := JoinElements(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 	var s1, s2, s3 = "a", "b", "c"
@@ -52,7 +52,7 @@ func TestJoinElements(t *testing.T) {
 	}
 	for expected, src := range resources22 {
 		if actual := JoinElements(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 
@@ -61,7 +61,7 @@ func TestJoinElements(t *testing.T) {
 	}
 	for expected, src := range resources3 {
 		if actual := JoinElements(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 	var b1, b2, b3 = true, false, true
@@ -70,7 +70,7 @@ func TestJoinElements(t *testing.T) {
 	}
 	for expected, src := range resources33 {
 		if actual := JoinElements(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 }
@@ -79,7 +79,7 @@ func TestB2S(t *testing.T) {
 	b := []byte{'A', 'B', 'C'}
 	s := B2S(b)
 	if s != "ABC" {
-		t.Fatalf("预期 %+v，实际值：%+v", "ABC", s)
+		t.Errorf("预期 %+v，实际值：%+v", "ABC", s)
 	}
 }
 
@@ -87,7 +87,7 @@ func TestS2B(t *testing.T) {
 	s := "!@#"
 	b := S2B(s)
 	if len(b) != 3 || s[0] != '!' || s[1] != '@' || s[2] != '#' {
-		t.Fatalf("预期 %+v，实际值：%+v", []byte{'!', '@', '#'}, b)
+		t.Errorf("预期 %+v，实际值：%+v", []byte{'!', '@', '#'}, b)
 	}
 }
 
@@ -96,7 +96,7 @@ func TestS2B2S(t *testing.T) {
 	b := S2B(s)
 	s2 := B2S(b)
 	if s2 != s {
-		t.Fatalf("预期 %+v，实际值：%+v", s, s2)
+		t.Errorf("预期 %+v，实际值：%+v", s, s2)
 	}
 }
 
@@ -105,7 +105,7 @@ func TestMaskChineseName(t *testing.T) {
 	excepted := "张*"
 	actual := MaskChineseName(name)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -114,7 +114,7 @@ func TestMaskChineseName1(t *testing.T) {
 	excepted := "张**"
 	actual := MaskChineseName(name)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -123,7 +123,7 @@ func TestMaskChineseName2(t *testing.T) {
 	excepted := "张***"
 	actual := MaskChineseName(name)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -132,7 +132,7 @@ func TestMaskChineseName4(t *testing.T) {
 	excepted := "h****"
 	actual := MaskChineseName(name)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -141,7 +141,7 @@ func TestMaskChineseNameEx(t *testing.T) {
 	excepted := "*三"
 	actual := MaskChineseNameEx(name, 0, 1)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -150,7 +150,7 @@ func TestMaskChineseNameEx1(t *testing.T) {
 	excepted := "*三一"
 	actual := MaskChineseNameEx(name, 0, 2)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -159,7 +159,7 @@ func TestMaskChineseNameEx2(t *testing.T) {
 	excepted := "*三三三"
 	actual := MaskChineseNameEx(name, 0, 3)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -168,7 +168,7 @@ func TestMaskChineseNameEx4(t *testing.T) {
 	excepted := "*ello"
 	actual := MaskChineseNameEx(name, 0, 4)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -177,7 +177,7 @@ func TestMaskChineseNameEx5(t *testing.T) {
 	excepted := "张*二"
 	actual := MaskChineseNameEx(name, 1, 1)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -186,7 +186,7 @@ func TestMaskChineseNameEx6(t *testing.T) {
 	excepted := "*一二"
 	actual := MaskChineseNameEx(name, 0, utf8.RuneCountInString(name)-1)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -195,7 +195,7 @@ func TestMaskChineseMobile(t *testing.T) {
 	excepted := "130****5678"
 	actual := MaskChineseMobile(tel)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -204,7 +204,7 @@ func TestMaskChsCard34(t *testing.T) {
 	excepted := "101***********1234"
 	actual := MaskChineseIdCard34(idCard)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -213,7 +213,7 @@ func TestMaskChsCard64(t *testing.T) {
 	excepted := "101101********1234"
 	actual := MaskChineseIdCard64(idCard)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -222,7 +222,7 @@ func TestMaskChsCard11(t *testing.T) {
 	excepted := "1****************4"
 	actual := MaskChineseIdCard11(idCard)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -231,7 +231,7 @@ func TestMaskChineseIdCard(t *testing.T) {
 	excepted := "101***********1234"
 	actual := MaskChineseIdCard(idCard, 3, 4)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -240,7 +240,7 @@ func TestMaskChineseIdCard2(t *testing.T) {
 	excepted := "101***********123X"
 	actual := MaskChineseIdCard(idCard, 3, 4)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -249,7 +249,7 @@ func TestMaskChineseIdCard3(t *testing.T) {
 	excepted := "101***********123x"
 	actual := MaskChineseIdCard(idCard, 3, 4)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -258,7 +258,7 @@ func TestMaskAnyString(t *testing.T) {
 	excepted := "一***五"
 	actual := MaskAnyString(s, 1, 1)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -267,7 +267,7 @@ func TestMaskAnyString1(t *testing.T) {
 	excepted := "一****"
 	actual := MaskAnyString(s, 1, 0)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }
 
@@ -276,6 +276,15 @@ func TestMaskAnyString2(t *testing.T) {
 	excepted := "****五"
 	actual := MaskAnyString(s, 0, 1)
 	if actual != excepted {
-		t.Fatalf("预期 %v，实际值：%v", excepted, actual)
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestMaskAnyString3(t *testing.T) {
+	s := "一二三四五六七八九十"
+	excepted := "一二三******十"
+	actual := MaskAnyString(s, 3, 1)
+	if actual != excepted {
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
 	}
 }

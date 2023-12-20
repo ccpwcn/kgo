@@ -14,7 +14,7 @@ func TestNumJoinStr(t *testing.T) {
 	}
 	for expected, src := range resources1 {
 		if actual := NumJoinStr(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 	var n1, n2, n3 = 111, 222, 333
@@ -23,7 +23,7 @@ func TestNumJoinStr(t *testing.T) {
 	}
 	for expected, src := range resources11 {
 		if actual := NumJoinStr(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 	resources2 := map[string][]float64{
@@ -32,7 +32,7 @@ func TestNumJoinStr(t *testing.T) {
 	}
 	for expected, src := range resources2 {
 		if actual := NumJoinStr(src); actual != expected {
-			t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+			t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 		}
 	}
 }
@@ -48,7 +48,7 @@ func TestNums2Strings(t *testing.T) {
 		actuals := Nums2Strings(expected)
 		for j, actual := range actuals {
 			if actual != strconv.FormatInt(int64(resources[i][j]), 10) {
-				t.Fatalf("预期 %+v，实际值：%+v", expected, actual)
+				t.Errorf("预期 %+v，实际值：%+v", expected, actual)
 			}
 		}
 	}

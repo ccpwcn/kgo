@@ -42,6 +42,7 @@
   - MaskChineseIdCard64 中国身份证号脱敏，MaskChineseMobile简化版，保留前6位后4位
   - MaskChineseIdCard11 中国身份证号脱敏，MaskChineseMobile简化版，保留前1位后1位
   - MaskAnyString 任意字符串脱敏，可指定左侧保留几个字符、右侧保留几个字符
+  - Masker 更强大的字符串脱敏工具💊，有多个选项可以用于实现您的脱敏需求，位于子包`kg_str`中
 - [x] 本地缓存相关操作
   - Set 设置缓存项，支持仅设置缓存，也支持同时给缓存添加一个过期时间
   - Get 获得缓存内容
