@@ -28,14 +28,14 @@ func Uuid() string {
 	uuid := newRandomFromPool()
 	var buf [36]byte
 	encodeHex(buf[:], uuid)
-	return string(buf[:])
+	return B2S(buf[:])
 }
 
 func SimpleUuid() string {
 	uuid := newRandomFromPool()
 	var buf [32]byte
 	encodeHexShort(buf[:], uuid)
-	return string(buf[:])
+	return B2S(buf[:])
 }
 
 func newRandomFromPool() UUID {
