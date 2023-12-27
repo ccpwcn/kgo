@@ -83,6 +83,30 @@ func TestB2S(t *testing.T) {
 	}
 }
 
+func TestR2S_ASCII(t *testing.T) {
+	b := []rune{'A', 'B', 'C'}
+	s := R2S(b)
+	if s != "ABC" {
+		t.Errorf("预期 %+v，实际值：%+v", "ABC", s)
+	}
+}
+
+func TestR2S_Chinese(t *testing.T) {
+	b := []rune{'一', '二', '三'}
+	s := R2S(b)
+	if s != "一二三" {
+		t.Errorf("预期 %+v，实际值：%+v", "ABC", s)
+	}
+}
+
+func TestR2S_Mix(t *testing.T) {
+	b := []rune{'一', '1', '二', '2', '三', '3'}
+	s := R2S(b)
+	if s != "一1二2三3" {
+		t.Errorf("预期 %+v，实际值：%+v", "ABC", s)
+	}
+}
+
 func TestS2B(t *testing.T) {
 	s := "!@#"
 	b := S2B(s)
@@ -286,5 +310,65 @@ func TestMaskAnyString3(t *testing.T) {
 	actual := MaskAnyString(s, 3, 1)
 	if actual != excepted {
 		t.Errorf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestReverseStringEnglish(t *testing.T) {
+	s := "abcd"
+	excepted := "dcba"
+	actual := ReverseString(s)
+	if actual != excepted {
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestReverseStringChinese(t *testing.T) {
+	s := "一二三四"
+	excepted := "四三二一"
+	actual := ReverseString(s)
+	if actual != excepted {
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestReverseStringMix(t *testing.T) {
+	s := "一1二2三3"
+	excepted := "3三2二1一"
+	actual := ReverseString(s)
+	if actual != excepted {
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
+func TestEnglishWordsCount(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "hello_word",
+			args: args{s: "hello_word"},
+			want: 2,
+		},
+		{
+			name: "hello word",
+			args: args{s: "hello word"},
+			want: 2,
+		},
+		{
+			name: "statement",
+			args: args{s: "Hello, this is a sample text with some English words."},
+			want: 10,
+		},
+	}
+	for _, test := range tests {
+		actual := EnglishWordsCount(test.args.s)
+		if actual != test.want {
+			t.Errorf("预期 %v，实际值：%v", test.want, actual)
+		}
 	}
 }
