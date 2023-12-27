@@ -3,23 +3,29 @@ package kgo
 import (
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 	"unicode/utf8"
 	"unsafe"
 )
 
 // 英文特殊符号
-var specificSymbolEn = []rune{
-	'`', '~', '@', '!', '#', '$', '%', '^', '&', '*', '(', ')', '-', '+', '=',
-	'|', '\\', '[', ']', '{', '}', ':', ';', '"', '\'', '<', '>', ',', '?', '/', ' ',
-}
+var (
+	specificSymbolEn = []rune{
+		'`', '~', '@', '!', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=',
+		'|', '\\', '[', ']', '{', '}', ':', ';', '"', '\'', '<', '>', ',', '?', '/', ' ',
+	}
 
-// 中文特殊符号
-var specificSymbolCn = []rune{
-	'“', '”', '（', '）', '、', '《', '》', '，', '；', '：', '？', '！', '…', '―',
-	'—', '·', '¨', '｜', '〃', '‘', '’', '～', '‖', '∶', '＂', '＇', '｀', '｜',
-	'〔', '〕', '〈', '〉', '「', '」', '『', '』', '〖', '〗', '【', '】', '（', '）', '［', '］', '｛', '｝', ' ', ' ',
-}
+	// 中文特殊符号
+	specificSymbolCn = []rune{
+		'“', '”', '（', '）', '、', '《', '》', '，', '；', '：', '？', '！', '…', '―',
+		'—', '·', '¨', '｜', '〃', '‘', '’', '～', '‖', '∶', '＂', '＇', '｀', '｜',
+		'〔', '〕', '〈', '〉', '「', '」', '『', '』', '〖', '〗', '【', '】', '（', '）', '［', '］', '｛', '｝', ' ', ' ',
+	}
+
+	// 英文单词判断正则表达式
+	englishWordsPattern = regexp.MustCompile("[a-zA-Z]+")
+)
 
 // Clean 清理字符串，去除其实的各种特殊符号，一律替换为下划线
 func Clean(str string) string {
@@ -56,6 +62,11 @@ func JoinElements[T IntUintFloat | IntUintFloatPtr | string | *string | bool | *
 // B2S byte切片转为string
 func B2S(b []byte) (s string) {
 	return *(*string)(unsafe.Pointer(&b))
+}
+
+// R2S rune切片转为string
+func R2S(b []rune) (s string) {
+	return (string)(b)
 }
 
 // S2B string转为byte切片
@@ -209,4 +220,22 @@ func MaskAnyString(s string, left, right int) (masked string) {
 		i++
 	}
 	return masked
+}
+
+// ReverseString 字符串反转
+func ReverseString(s string) string {
+	runeSlice := []rune(s)
+	for i, j := 0, len(runeSlice)-1; i < j; i, j = i+1, j-1 {
+		runeSlice[i], runeSlice[j] = runeSlice[j], runeSlice[i]
+	}
+	return string(runeSlice)
+}
+
+// EnglishWordsCount 英文单词数量，以非英文字符分割之后统计
+//
+// 注意：这里假设了英文字符是 ASCII 字符集
+func EnglishWordsCount(s string) int {
+	// 使用正则表达式匹配英文单词
+	words := englishWordsPattern.FindAllString(s, -1)
+	return len(words)
 }
