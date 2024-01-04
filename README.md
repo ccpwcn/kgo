@@ -66,6 +66,10 @@
   - Contains 包含某个元素
   - ContainsAll 包含指定元素
   - ContainsAny 包含任意元素
+  - SameElements 两个切片是否拥有相同的元素，不考虑顺序，元素相同即可
+  - Intersection 两个切片的交集
+  - Union 两个切片的合集，如果遇到重复元素，只保留1个
+  - Diff 两个切片的差集，以第一个参数为基准
 - [x] 结构体相关操作
   - JoinStructsField 将任意结构体切片中的指定字段的值使用英文逗号拼接成一个字符串，例如：用户列表中，所有用户ID拼成一个字符串
   - PickStructsField 将任意结构体切片中的指定字段的值提取出来形成一个保持原类型的数组，例如：用户列表中，所有用户ID提取成一个用户ID数组

@@ -61,3 +61,66 @@ func ContainsAny[T any](data []T, elements []T) bool {
 	}
 	return false
 }
+
+// SameElements 两个切片是否拥有相同的元素，不考虑它们的顺序，只要元素相同即可
+func SameElements[T any](data1, data2 []T) bool {
+	if len(data1) != len(data2) {
+		return false
+	}
+	for _, datum1 := range data1 {
+		found := false
+		for _, datum2 := range data2 {
+			if reflect.DeepEqual(datum1, datum2) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}
+
+// Intersection 两个切片的交集
+func Intersection[T any](s1, s2 []T) (results []T) {
+	hash := make(map[any]bool)
+	for _, elem := range s1 {
+		hash[elem] = true
+	}
+	for _, elem := range s2 {
+		if hash[elem] {
+			results = append(results, elem)
+		}
+	}
+	return results
+}
+
+// Union 两个切片的合集，如果遇到重复元素，只保留1个
+func Union[T any](s1, s2 []T) (results []T) {
+	hash := make(map[any]bool)
+	for _, elem := range s1 {
+		hash[elem] = true
+	}
+	for _, elem := range s2 {
+		hash[elem] = true
+	}
+	for elem := range hash {
+		results = append(results, elem.(T))
+	}
+	return results
+}
+
+// Diff 两个切片的差集，以第一个参数s1为基准，即：返回在s1中存在 且 在s2中不存在的元素集合
+func Diff[T any](s1, s2 []T) (results []T) {
+	hash := make(map[any]bool)
+	for _, elem := range s2 {
+		hash[elem] = true
+	}
+	for _, elem := range s1 {
+		if !hash[elem] {
+			results = append(results, elem)
+		}
+	}
+	return results
+}
