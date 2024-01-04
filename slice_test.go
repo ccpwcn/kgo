@@ -225,3 +225,71 @@ func TestContainsAnyInteger(t *testing.T) {
 		})
 	}
 }
+
+func TestSlice_Intersection_Union_Diff_Integer(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+	}
+	type testCase[T any] struct {
+		name             string
+		args             args[T]
+		intersectionWant []T
+		unionWant        []T
+		diffWant         []T
+	}
+	tests := []testCase[int]{
+		{
+			name:             "SliceIntersection_Union_Diff_Integer",
+			args:             args[int]{data1: []int{1, 2, 3, 4}, data2: []int{1, 2, 8, 10}},
+			intersectionWant: []int{1, 2},
+			unionWant:        []int{1, 2, 3, 4, 8, 10},
+			diffWant:         []int{3, 4},
+		},
+	}
+	for _, tt := range tests {
+		if got := Intersection[int](tt.args.data1, tt.args.data2); !SameElements(got, tt.intersectionWant) {
+			t.Errorf("Intersection() = %v, want %v", got, tt.intersectionWant)
+		}
+		if got := Union[int](tt.args.data1, tt.args.data2); !SameElements(got, tt.unionWant) {
+			t.Errorf("Union() = %v, want %v", got, tt.unionWant)
+		}
+		if got := Diff[int](tt.args.data1, tt.args.data2); !SameElements(got, tt.diffWant) {
+			t.Errorf("Diff() = %v, want %v", got, tt.diffWant)
+		}
+	}
+}
+
+func TestSlice_Intersection_Union_Diff_String(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+	}
+	type testCase[T any] struct {
+		name             string
+		args             args[T]
+		intersectionWant []T
+		unionWant        []T
+		diffWant         []T
+	}
+	tests := []testCase[string]{
+		{
+			name:             "SliceIntersection_Union_Diff_String",
+			args:             args[string]{data1: []string{"1", "2", "3", "4"}, data2: []string{"1", "2", "8", "10"}},
+			intersectionWant: []string{"1", "2"},
+			unionWant:        []string{"1", "2", "3", "4", "8", "10"},
+			diffWant:         []string{"3", "4"},
+		},
+	}
+	for _, tt := range tests {
+		if got := Intersection[string](tt.args.data1, tt.args.data2); !SameElements(got, tt.intersectionWant) {
+			t.Errorf("Intersection() = %v, want %v", got, tt.intersectionWant)
+		}
+		if got := Union[string](tt.args.data1, tt.args.data2); !SameElements(got, tt.unionWant) {
+			t.Errorf("Union() = %v, want %v", got, tt.unionWant)
+		}
+		if got := Diff[string](tt.args.data1, tt.args.data2); !SameElements(got, tt.diffWant) {
+			t.Errorf("Diff() = %v, want %v", got, tt.diffWant)
+		}
+	}
+}
