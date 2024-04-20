@@ -22,72 +22,73 @@
 
 # 2. 功能目录
 - [x] 目录文件相关操作
-  - GetExeDir 获得可执行程序所在目录
-  - GetWorkDir 获得工作目录
-  - IsExists 文件是否存在
-  - MustRead 读取一个文件内容到[]byte中，确定文件很小时，直接使用这个方法，很省事
+  - GetExeDir 获得可执行程序所在目录。
+  - GetWorkDir 获得工作目录。
+  - IsExists 文件是否存在。
+  - MustRead 读取一个文件内容到[]byte中，确定文件很小时，直接使用这个方法，很省事。
 - [x] 数字相关操作
-  - NumJoinStr 将一个数字（int、float）数组合并成一个字符串数组
-  - Nums2Strings 将一个数字（int、float）数组合转换一个字符串数组
+  - NumJoinStr 将一个数字（int、float）数组合并成一个字符串数组。
+  - Nums2Strings 将一个数字（int、float）数组合转换一个字符串数组。
 - [x] 字符串相关操作
-  - Clean 清理字符串，将其中的特殊字符（括号、标点符号、转义字符等等）一律转换成下划线
-  - JoinElements 将任意基本类型的数组使用英文逗号拼接成一个字符串
-  - B2S byte切片转为string，不使用常规的强转方法，直接引用内存地址转换，性能非常高
-  - S2B string转为byte切片，不使用常规的强转方法，直接引用内存地址转换，性能非常高
-  - MaskChineseName 中文姓名脱敏
-  - MaskChineseNameEx 中文姓名脱敏扩展方法，可指定脱敏位
-  - MaskChineseMobile 中国手机号脱敏
-  - MaskChineseIdCard 中国身份证号脱敏
-  - MaskChineseIdCard34 中国身份证号脱敏，MaskChineseMobile简化版，保留前3位后4位
-  - MaskChineseIdCard64 中国身份证号脱敏，MaskChineseMobile简化版，保留前6位后4位
-  - MaskChineseIdCard11 中国身份证号脱敏，MaskChineseMobile简化版，保留前1位后1位
-  - MaskAnyString 任意字符串脱敏，可指定左侧保留几个字符、右侧保留几个字符
-  - Masker 更强大的字符串脱敏综合工具💊，有多个选项可以用于实现您的脱敏需求，能够将任意敏感信息（身份证号、手机号、地址、银行卡号等等）脱敏，位于子包`kg_str`中
-  - ReverseString 反转字符串
-  - EnglishWordsCount 统计英文单词的数量
+  - Clean 清理字符串，将其中的特殊字符（括号、标点符号、转义字符等等）一律转换成下划线。
+  - JoinElements 将任意基本类型的数组使用英文逗号拼接成一个字符串。
+  - B2S byte切片转为string，不使用常规的强转方法，直接引用内存地址转换，性能非常高。
+  - S2B string转为byte切片，不使用常规的强转方法，直接引用内存地址转换，性能非常高。
+  - MaskChineseName 中文姓名脱敏。
+  - MaskChineseNameEx 中文姓名脱敏扩展方法，可指定脱敏位。
+  - MaskChineseMobile 中国手机号脱敏。
+  - MaskChineseIdCard 中国身份证号脱敏。
+  - MaskChineseIdCard34 中国身份证号脱敏，MaskChineseMobile简化版，保留前3位后4位。
+  - MaskChineseIdCard64 中国身份证号脱敏，MaskChineseMobile简化版，保留前6位后4位。
+  - MaskChineseIdCard11 中国身份证号脱敏，MaskChineseMobile简化版，保留前1位后1位。
+  - MaskAnyString 任意字符串脱敏，可指定左侧保留几个字符、右侧保留几个字符。
+  - Masker 更强大的字符串脱敏综合工具💊，有多个选项可以用于实现您的脱敏需求，能够将任意敏感信息（身份证号、手机号、地址、银行卡号等等）脱敏，位于子包`kg_str`中。
+  - ReverseString 反转字符串。
+  - EnglishWordsCount 统计英文单词的数量。
+  - ArabicToChinese 将一个阿拉伯数字转为中文数字，虽然目前仅支持正整数，但是已满足绝大多数业务场景了，实测很好用。
 - [x] 本地缓存相关操作
-  - Set 设置缓存项，支持仅设置缓存，也支持同时给缓存添加一个过期时间
-  - Get 获得缓存内容
-  - Delete 删除缓存
-  - Exists 判断缓存项是否存在
-  - Size 获得缓存大小
+  - Set 设置缓存项，支持仅设置缓存，也支持同时给缓存添加一个过期时间。
+  - Get 获得缓存内容。
+  - Delete 删除缓存。
+  - Exists 判断缓存项是否存在。
+  - Size 获得缓存大小。
 - [x] Map相关操作
-  - HasKey 是否拥有某个Key
-  - MapKeys 将一个Map的所有Key转换成数组返回
+  - HasKey 是否拥有某个Key。
+  - MapKeys 将一个Map的所有Key转换成数组返回。
 - [x] 自定义Set（拥有的元素不可重复，类似于Java中的HashSet），添加的元素必须是可比较的，即实现了标准接口中的comparable，这也可以理解，如果元素不可比较，怎么知道是否重复是否已经存在了呢？
-  - Add 添加元素
-  - Remove 删除元素
-  - Clear 清空所有元素
-  - Contains 是否在已经存在的元素中
-  - Len 获得Set集合中元素的数量
-  - Empty 判断Set元素是否是空的
+  - Add 添加元素。
+  - Remove 删除元素。
+  - Clear 清空所有元素。
+  - Contains 是否在已经存在的元素中。
+  - Len 获得Set集合中元素的数量。
+  - Empty 判断Set元素是否是空的。
 - [x] Slice切片相关
-  - SlicePagination 切片分页，返回一个分好页的二维数组，可指定页大小 
-  - Contains 包含某个元素
-  - ContainsAll 包含指定元素
-  - ContainsAny 包含任意元素
-  - SameElements 两个切片是否拥有相同的元素，不考虑顺序，元素相同即可
-  - Intersection 两个切片的交集
-  - Union 两个切片的合集，如果遇到重复元素，只保留1个
-  - Diff 两个切片的差集，以第一个参数为基准
+  - SlicePagination 切片分页，返回一个分好页的二维数组，可指定页大小。 
+  - Contains 包含某个元素。
+  - ContainsAll 包含指定元素。
+  - ContainsAny 包含任意元素。
+  - SameElements 两个切片是否拥有相同的元素，不考虑顺序，元素相同即可。
+  - Intersection 两个切片的交集。
+  - Union 两个切片的合集，如果遇到重复元素，只保留1个。
+  - Diff 两个切片的差集，以第一个参数为基准。
 - [x] 结构体相关操作
-  - JoinStructsField 将任意结构体切片中的指定字段的值使用英文逗号拼接成一个字符串，例如：用户列表中，所有用户ID拼成一个字符串
-  - PickStructsField 将任意结构体切片中的指定字段的值提取出来形成一个保持原类型的数组，例如：用户列表中，所有用户ID提取成一个用户ID数组
-  - SliceGroupBy 将任何结构体切片切片中按指定字段的值提取出来进行分组，形成一个Map，例如对用户按类型分组，类型的值为Map的key，对应类型的所有用户集合为Map的Value
-  - CopyFields 复制结构体实例字段值到目标结构体实例，类似于Java中的BeanUtils.copyProperties(src, dst)工具类，这个非常实用，我再也不用写几十行的两个结构体实例赋值的代码了
+  - JoinStructsField 将任意结构体切片中的指定字段的值使用英文逗号拼接成一个字符串，例如：用户列表中，所有用户ID拼成一个字符串。
+  - PickStructsField 将任意结构体切片中的指定字段的值提取出来形成一个保持原类型的数组，例如：用户列表中，所有用户ID提取成一个用户ID数组。
+  - SliceGroupBy 将任何结构体切片切片中按指定字段的值提取出来进行分组，形成一个Map，例如对用户按类型分组，类型的值为Map的key，对应类型的所有用户集合为Map的Value。
+  - CopyFields 复制结构体实例字段值到目标结构体实例，类似于Java中的BeanUtils.copyProperties(src, dst)工具类，这个非常实用，我再也不用写几十行的两个结构体实例赋值的代码了。
 - [x] 雪花算法
   - 通用实现方法，在程序启动的时候调用`InitSnowflake(workerId int64, dataCenterId int64) (err error)`初始化一次，到处随时使用方法`SnowflakeId() int64`和`GetSnowflakeId[T string | int64]() (id T)`获得ID，并发安全
 - [x] UUID 高性能UUID
-  - Uuid 通用方法，自带缓冲池，不需要初始化，随时获得ID，多goroutine并发安全
-  - SimpleUuid 去除横线方法，自带缓冲池，不需要初始化，到处随时获得ID，多goroutine并发安全，推荐👍👍👍
+  - Uuid 通用方法，自带缓冲池，不需要初始化，随时获得ID，多goroutine并发安全。
+  - SimpleUuid 去除横线方法，自带缓冲池，不需要初始化，到处随时获得ID，多goroutine并发安全，推荐👍👍👍。
 - [x] 时间函数
-  - NowStr 取得通用的当前时间，不必再格式化了
-  - MonthStartTime 取得本月的开始时间
-  - MonthEndTime 取得本月的结束时间
-  - AnyMonthStartTime 以当前时间为基点，取任意月的开始时间（比如上个月、下个月，用正负数控制，与Go标准库的API用法保持一致），这在一些时间计算的时候很有用
-  - AnyMonthEndTime 以当前时间为基点，取任意月的的结束时间（比如上个月、下个月，用正负数控制，与Go标准库的API用法保持一致），这在一些时间计算的时候很有用
+  - NowStr 取得通用的当前时间，不必再格式化了。
+  - MonthStartTime 取得本月的开始时间。
+  - MonthEndTime 取得本月的结束时间。
+  - AnyMonthStartTime 以当前时间为基点，取任意月的开始时间（比如上个月、下个月，用正负数控制，与Go标准库的API用法保持一致），这在一些时间计算的时候很有用。
+  - AnyMonthEndTime 以当前时间为基点，取任意月的的结束时间（比如上个月、下个月，用正负数控制，与Go标准库的API用法保持一致），这在一些时间计算的时候很有用。
 - [x] 杂项
-  - RunFuncName 获得当前代码所在函数名 
+  - RunFuncName 获得当前代码所在函数名。
 
 🍕🍕🍕更多使用方法请参见测试用例或代码注释，都非常简单易用。
 
