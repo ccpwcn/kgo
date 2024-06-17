@@ -29,17 +29,17 @@ func TestSnowflake_Concurrent_Id(t *testing.T) {
 	} else {
 		const count = 5
 		const machine = 3
-		var buffer = make(map[int64]int8, count*3)
+		var buffer sync.Map
 		var wg sync.WaitGroup
 		for i := 1; i <= machine; i++ {
 			wg.Add(1)
 			go func(i int64) {
 				for j := 0; j < count; j++ {
 					id := SnowflakeId()
-					if _, ok := buffer[id]; ok {
+					if _, ok := buffer.Load(id); ok {
 						t.Errorf("ID %+v 重复了", id)
 					} else {
-						buffer[id] = 1
+						buffer.Store(id, 1)
 						t.Logf("ID %+v\n", id)
 					}
 				}
