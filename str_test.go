@@ -214,6 +214,15 @@ func TestMaskChineseNameEx6(t *testing.T) {
 	}
 }
 
+func TestMaskChineseNameExOnlyFirstName(t *testing.T) {
+	name := "张一二"
+	excepted := "张**"
+	actual := MaskChineseNameEx(name, 1, 0)
+	if actual != excepted {
+		t.Errorf("预期 %v，实际值：%v", excepted, actual)
+	}
+}
+
 func TestMaskChineseMobile(t *testing.T) {
 	tel := "13012345678"
 	excepted := "130****5678"
