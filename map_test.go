@@ -45,7 +45,36 @@ func TestMapKeys(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MapKeys(tt.args.m); !ContainsAll(got, tt.want) {
+			if got := MapKeys[string, int](tt.args.m); !ContainsAll(got, tt.want) {
+				t.Errorf("MapKeys() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMapKeysEmptyStruct(t *testing.T) {
+	type args[K comparable, V any] struct {
+		m map[K]V
+	}
+	type testCase[K comparable, V any] struct {
+		name string
+		args args[K, V]
+		want []K
+	}
+	tests := []testCase[int64, struct{}]{
+		{
+			name: "string keys",
+			args: args[int64, struct{}]{
+				map[int64]struct{}{
+					1: {},
+					2: {},
+					3: {},
+				},
+			}, want: []int64{1, 2, 3}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := MapKeys[int64, struct{}](tt.args.m); !ContainsAll(got, tt.want) {
 				t.Errorf("MapKeys() = %v, want %v", got, tt.want)
 			}
 		})

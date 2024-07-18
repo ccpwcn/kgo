@@ -27,7 +27,7 @@ var (
 	englishWordsPattern = regexp.MustCompile("[a-zA-Z]+")
 )
 
-// Clean 清理字符串，去除其实的各种特殊符号，一律替换为下划线
+// Clean 清理字符串，去除其实的各种特殊符号，一律替换为下划线，这样变会变成安全的字符串，在绝大多数场景下不会有问题
 func Clean(str string) string {
 	var onlyCharacters string
 	onlyCharacters = strings.ReplaceAll(str, ".", "__")
@@ -97,27 +97,27 @@ func MaskChineseName(name string) (masked string) {
 
 // MaskChineseNameEx 中文姓名脱敏，可以指定左右保留字符数量
 //
-// 示例1：MaskChineseNameEx("张一二", 1, 1) => "张*二" 左边保留1个字符、右边保留1个字符
+// 示例1：
+//
+//	MaskChineseNameEx("张一二", 1, 1) // "张*二" 左边保留1个字符、右边保留1个字符
 //
 // 示例2：
 //
 //	name := "张一二"
-//	MaskChineseNameEx(name, 0, utf8.RuneCountInString(name)-1) => "*一二" 左边保留0个字符、右边保留所有字符少1个
+//	MaskChineseNameEx(name, 0, utf8.RuneCountInString(name)-1) // "*一二" 左边保留0个字符、右边保留所有字符少1个，达到对姓氏脱敏的目的
 func MaskChineseNameEx(name string, left, right int) (masked string) {
-	size := utf8.RuneCountInString(name)
-	if size == 0 {
-		return ""
+	// 将中文字符串转换为rune数组，方便进行字符级别的操作
+	runes := []rune(name)
+	size := len(runes)
+	leftRunes := runes[:left]
+	rightRunes := runes[size-right:]
+	middleRunes := make([]rune, size-len(leftRunes)-len(rightRunes))
+	for i := 0; i < len(middleRunes); i++ {
+		middleRunes[i] = '*'
 	}
-	i := 0
-	for _, n := range name {
-		if i < left || i >= size-right {
-			masked += fmt.Sprintf("%c", n)
-		} else {
-			masked += "*"
-		}
-		i++
-	}
-	return masked
+
+	// 返回脱敏后的名字
+	return string(leftRunes) + string(middleRunes) + string(rightRunes)
 }
 
 // MaskChineseMobile 中国手机号脱敏

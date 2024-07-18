@@ -6,7 +6,9 @@ import (
 	"strings"
 )
 
-// JoinStructsField 将一个结构体切片中的指定字段的值拼接成字符串，请注意：第二个参数指定的字段，要存在且已导出，否则结果可能不是预期的样子
+// JoinStructsField 将一个结构体切片中的指定字段的值拼接成字符串，
+//
+// 注意：第二个参数指定的字段，要存在且已导出，否则结果可能不是预期的样子。
 func JoinStructsField[T interface{}](elements []T, fieldName string) (s string) {
 	// 只处理导出了的字段
 	if fieldName[0] < 'A' || fieldName[0] > 'Z' {
@@ -38,7 +40,9 @@ func JoinStructsField[T interface{}](elements []T, fieldName string) (s string) 
 	}
 }
 
-// PickStructsField 将指定结构体切片中的指定字段的值提取出来，形成一个数组，请注意：第二个参数指定的字段，要存在且已导出，否则结果可能不是预期的样子
+// PickStructsField 将指定结构体切片中的指定字段的值提取出来，形成一个数组，
+//
+// 请注意：第二个参数指定的字段，要存在且已导出，否则结果可能不是预期的样子。
 func PickStructsField[T interface{}, FT comparable](elements []T, fieldName string) (s []FT) {
 	// 只处理导出了的字段
 	if fieldName[0] < 'A' || fieldName[0] > 'Z' {
@@ -93,12 +97,16 @@ func SliceGroupBy[T any, KT comparable](data []T, fieldName string) map[KT][]T {
 			}
 		}
 	}
+	// Output:
+	// 分组的结果是一个Map，Key是分组字段的值，Value是分组后的结构体切片
 	return m
 }
 
 // CopyFields 将一个结构体中的所有字段值全部复制到目标结构体中，可以指定忽略某些字段
-// 注意：如果你的字段是非指针类型，那么是值拷贝，如果你的字段是指针类型，那么是引用拷贝
-// 即：在字段是指针类型的情况下，即使复制值到目标结构体实例中了，修改源结构体实例的字段值，会影响目标结构体实例的值，因为是引用拷贝
+//
+// 注意：如果你的字段是非引用类型，那么是值拷贝，如果你的字段是指针类型，那么是引用拷贝。总而言之，引用类型是浅拷贝而不是深拷贝。
+//
+// 即：在字段是引用类型的情况下，即使复制值到目标结构体实例中了，修改源结构体实例的字段值，会影响目标结构体实例的值，因为是引用拷贝
 func CopyFields[SRC any, DST any](src SRC, ignore ...string) (dst DST) {
 	ignoreCount := len(ignore)
 	srcValue := reflect.ValueOf(src)
@@ -140,7 +148,8 @@ func CopyFields[SRC any, DST any](src SRC, ignore ...string) (dst DST) {
 }
 
 // SetField 给任意结构体的任意字段设置一个新值
-// newValue不可以传入反身过的值类型（即：不要传reflect.ValueOf(...)的结果），这会导致panic
+//
+// 注意： newValue不可以传入反射过的值类型（即：不要传reflect.ValueOf(...)的结果），这会导致panic
 func SetField(entity any, field string, newValue any) {
 	val := reflect.ValueOf(entity)
 	for val.Type().Kind() == reflect.Pointer {
