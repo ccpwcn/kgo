@@ -38,13 +38,13 @@
   - MaskChineseNameEx 中文姓名脱敏扩展方法，可指定脱敏位。
   - MaskChineseMobile 中国手机号脱敏。
   - MaskChineseIdCard 中国身份证号脱敏。
-  - MaskChineseIdCard34 中国身份证号脱敏，MaskChineseMobile简化版，保留前3位后4位。
-  - MaskChineseIdCard64 中国身份证号脱敏，MaskChineseMobile简化版，保留前6位后4位。
-  - MaskChineseIdCard11 中国身份证号脱敏，MaskChineseMobile简化版，保留前1位后1位。
+  - MaskChineseIdCard34 中国身份证号脱敏，MaskChineseMobile简化版，保留前3位后4位，更易用调用的函数。
+  - MaskChineseIdCard64 中国身份证号脱敏，MaskChineseMobile简化版，保留前6位后4位，更易用调用的函数。
+  - MaskChineseIdCard11 中国身份证号脱敏，MaskChineseMobile简化版，保留前1位后1位，更易用调用的函数。
   - MaskAnyString 任意字符串脱敏，可指定左侧保留几个字符、右侧保留几个字符。
   - Masker 更强大的字符串脱敏综合工具💊，有多个选项可以用于实现您的脱敏需求，能够将任意敏感信息（身份证号、手机号、地址、银行卡号等等）脱敏，位于子包`kg_str`中。
   - ReverseString 反转字符串。
-  - EnglishWordsCount 统计英文单词的数量。
+  - EnglishWordsCount 统计英文单词的数量，对于英文单词的切分，业内有很多讨论，此函数的实现结果仅供参考，本人不参与这些争论。
   - ArabicToChinese 将一个阿拉伯数字转为中文数字，虽然目前仅支持正整数，但是已满足绝大多数业务场景了，实测很好用。
 - [x] 本地缓存相关操作
   - Set 设置缓存项，支持仅设置缓存，也支持同时给缓存添加一个过期时间。
@@ -79,8 +79,8 @@
 - [x] 雪花算法
   - 通用实现方法，在程序启动的时候调用`InitSnowflake(workerId int64, dataCenterId int64) (err error)`初始化一次，到处随时使用方法`SnowflakeId() int64`和`GetSnowflakeId[T string | int64]() (id T)`获得ID，并发安全
 - [x] UUID 高性能UUID
-  - Uuid 通用方法，自带缓冲池，不需要初始化，随时获得ID，多goroutine并发安全。
-  - SimpleUuid 去除横线方法，自带缓冲池，不需要初始化，到处随时获得ID，多goroutine并发安全，推荐👍👍👍。
+  - Uuid 通用方法，自带缓冲池，不需要初始化，随时获得ID，并发安全。
+  - SimpleUuid 去除横线方法，自带缓冲池，不需要初始化，到处随时获得ID，并发安全，推荐👍👍👍。
 - [x] 时间函数
   - NowStr 取得通用的当前时间，不必再格式化了。
   - MonthStartTime 取得本月的开始时间。
@@ -105,6 +105,8 @@ go get -u github.com/ccpwcn/kgo
 具体请查看单元测试，那里就是测试代码，或者直接查看源码，都是非常简单的引用类，后面东西多了，复杂了，我再加上专门的使用说明文档吧。
 
 # 5. 性能相关测试
+本文档中对性能测试的表述，都是基于Windows 10系统下做的，无特殊环境设置，使用默认配置测试，符合一般使用场景。
+
 ## 5.1 雪花算法性能表现
 为了确保在生产环境使用没有问题，我特意写了一个性能测试，好好对雪花算法进行了压力测试。
 
