@@ -293,3 +293,49 @@ func TestSlice_Intersection_Union_Diff_String(t *testing.T) {
 		}
 	}
 }
+
+func TestSplitCounter(t *testing.T) {
+	type args struct {
+		count    int
+		pageSize int
+	}
+	type testCase[T any] struct {
+		name string
+		args args
+		want [][]T
+	}
+	tests := []testCase[string]{
+		{
+			name: "SplitCounter1",
+			args: args{count: 13, pageSize: 5},
+			want: [][]string{{"", "", "", "", ""}, {"", "", "", "", ""}, {"", ""}},
+		},
+		{
+			name: "SplitCounter2",
+			args: args{count: 3, pageSize: 5},
+			want: [][]string{{"", "", ""}},
+		},
+		{
+			name: "SplitCounter3",
+			args: args{count: 10, pageSize: 5},
+			want: [][]string{{"", "", "", "", ""}, {"", "", "", "", ""}},
+		},
+	}
+	for _, test := range tests {
+		pageCount := test.args.count/test.args.pageSize + 1
+		t.Run(test.name, func(t *testing.T) {
+			items := SplitCounter[string](test.args.pageSize, test.args.count)
+			if len(items) != pageCount {
+				t.Errorf("len(items) = %v, want 3", len(items))
+			}
+			for i, item := range items {
+				if i+1 < pageCount && cap(item) != test.args.pageSize {
+					t.Errorf("cap(item) = %v, want %v", cap(item), test.args.pageSize)
+				}
+				if i+1 == pageCount && cap(item) != test.args.count%test.args.pageSize {
+					t.Errorf("cap(item) = %v, want %v", cap(item), test.args.count%test.args.pageSize)
+				}
+			}
+		})
+	}
+}
