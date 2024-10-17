@@ -1,6 +1,8 @@
 package kgo
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type ChsSort interface {
 }
@@ -123,4 +125,19 @@ func Diff[T any](s1, s2 []T) (results []T) {
 		}
 	}
 	return results
+}
+
+// SplitCounter 根据给定的页大小和总数，生成一个二维切片
+func SplitCounter[T any](pageSize, count int) (items [][]T) {
+	if pageSize <= 0 || count <= 0 {
+		return
+	}
+	for page := 1; page <= count/pageSize+1; page++ {
+		if page <= count/pageSize {
+			items = append(items, make([]T, 0, pageSize))
+		} else {
+			items = append(items, make([]T, 0, count%pageSize))
+		}
+	}
+	return items
 }
