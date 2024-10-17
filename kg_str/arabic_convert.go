@@ -27,10 +27,11 @@ var (
 
 // ArabicToChinese 阿里数字转中文数字
 func ArabicToChinese[T kgo.IntUintBig](arabic T) string {
+	var maxSupportedNum T = 9999_9999_9999
 	if arabic < 0 {
 		return ""
 	}
-	if arabic > 9999_9999_9999 {
+	if arabic > maxSupportedNum {
 		return ""
 	}
 	var (
