@@ -10,11 +10,11 @@ import (
 
 const (
 	epoch             = int64(1577808000000)                           // 设置起始时间(时间戳/毫秒)：2020-01-01 00:00:00，有效期69年
-	timestampBits     = uint(41)                                       // 时间戳占用位数
+	timestampBits41   = uint(41)                                       // 时间戳占用位数
 	datacenterIdBits  = uint(2)                                        // 数据中心id所占位数
 	workerIdBits      = uint(7)                                        // 机器id所占位数
 	sequenceBits      = uint(12)                                       // 序列所占的位数
-	timestampMax      = int64(-1 ^ (-1 << timestampBits))              // 时间戳最大值
+	timestampMax      = int64(-1 ^ (-1 << timestampBits41))            // 时间戳最大值
 	datacenterIdMax   = int64(-1 ^ (-1 << datacenterIdBits))           // 支持的最大数据中心id数量
 	workerIdMax       = int64(-1 ^ (-1 << workerIdBits))               // 支持的最大机器id数量
 	sequenceMask      = int64(-1 ^ (-1 << sequenceBits))               // 支持的最大序列id数量
