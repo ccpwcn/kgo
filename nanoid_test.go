@@ -21,6 +21,19 @@ func TestNormalNanoID(t *testing.T) {
 	}
 }
 
+func TestMustNanoID_CountLetter(t *testing.T) {
+	var m = make(map[byte]int)
+	for i := 0; i < 1000_0000; i++ {
+		id := MustNanoId()
+		for j := 0; j < len(id); j++ {
+			m[id[j]]++
+		}
+	}
+	for k, v := range m {
+		t.Logf("%q: %d\n", k, v)
+	}
+}
+
 func TestNormalNanoID_CheckDuplicate(t *testing.T) {
 	const count = 100_0000
 	ids := make(map[string]bool, count)
@@ -78,7 +91,7 @@ func Benchmark_NanoId(b *testing.B) {
 				for pb.Next() {
 					id := MustNanoId()
 					if _, ok := buffer.Load(id); ok {
-						b.Errorf("duplicated UUID %s", id)
+						b.Errorf("duplicated id %s", id)
 					}
 					buffer.Store(id, true)
 				}
