@@ -78,7 +78,7 @@ func Benchmark_NanoId(b *testing.B) {
 				for pb.Next() {
 					id := MustNanoId()
 					if _, ok := buffer.Load(id); ok {
-						b.Errorf("duplicated UUID %s", id)
+						b.Errorf("duplicated id %s", id)
 					}
 					buffer.Store(id, true)
 				}
