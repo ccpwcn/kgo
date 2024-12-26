@@ -84,6 +84,9 @@
   - CopyFields 复制结构体实例字段值到目标结构体实例，类似于Java中的BeanUtils.copyProperties(src, dst)工具类，这个非常实用，我再也不用写几十行的两个结构体实例赋值的代码了。
 - [x] 雪花算法
   - 通用实现方法，在程序启动的时候调用`InitSnowflake(workerId int64, dataCenterId int64) (err error)`初始化一次，到处随时使用方法`SnowflakeId() int64`和`GetSnowflakeId[T string | int64]() (id T)`获得ID，并发安全
+- [x] NanoID 更流行的、更短更好用的ID
+  - NanoId 生成一个默认大小的NanoID，如果出现错误，会返回error
+  - MustNanoId 生成一个默认大小的NanoID，如果中途出现错误，抛出 panic，但实际上是对内存buffer的读写，不会error，也不会panic，并发安全，推荐👍👍👍。
 - [x] UUID 高性能UUID
   - Uuid 通用方法，自带缓冲池，不需要初始化，随时获得ID，并发安全。
   - SimpleUuid 去除横线方法，自带缓冲池，不需要初始化，到处随时获得ID，并发安全，推荐👍👍👍。
@@ -286,6 +289,45 @@ ok      github.com/ccpwcn/kgo   474.448s
 > 剩下那0.01%的业务场景怎么办？也好办，搞多个后台服务，配置不同的workerId和dataCenterId，搞成分布式环境下引用本库生成雪花算法UUID，或者将引用本包中的UUID生成方法的程序布在不同的机器上，那么它们的硬件特征、硬件时钟不同，随机结果就不会重复。因为根据UUID算法的重复性分析研究结果，假如每秒产生10亿笔UUID，100年后只产生一次重复的机率是50%。如果地球上每个人都各有6亿笔UUID，发生一次重复的机率是50%。所以，担心什么？放心用吧。
 
 🍓🍓🍓请允许自我吹嘘一下：如此强悍生成唯一ID工具包，太牛了，我已在大规模生产环境中用起来了！
+
+## 5.3 NanoID 性能测试
+NanoID现在用的人也越来越多了，我也觉得它非常好用。参照网上许多实现，我又结合AI编程助手，写了一份生成NanoID的代码实现，亲测非常好用。
+
+### 5.3.1 常规测试
+- 生成一个NanoID，函数 `func NanoId() (string, error)` ，如果返回错误消息，可以判断一下。
+- 生成一个NanoID，函数 `func MustNanoId() string`，如果出现错误会panic，但其实是使用`rand.Read`往内存buffer中读取数据，不会出错的，推荐调用此函数。
+
+### 5.3.2 压力测试
+执行命令：
+```shell
+go test -v -bench="Benchmark_NanoId" -run=none -count=10 -benchmem -cpuprofile=nanoid_cpuprofile
+```
+输出：
+```text
+goos: windows
+goarch: amd64
+pkg: github.com/ccpwcn/kgo
+cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+Benchmark_NanoId
+Benchmark_NanoId-8             1        45529490700 ns/op       4616129488 B/op 130154720 allocs/op
+Benchmark_NanoId-8             1        45153548900 ns/op       4615686760 B/op 130153291 allocs/op
+Benchmark_NanoId-8             1        47777821100 ns/op       4615553368 B/op 130153658 allocs/op
+Benchmark_NanoId-8             1        46910560900 ns/op       4615471608 B/op 130153340 allocs/op
+Benchmark_NanoId-8             1        44465740900 ns/op       4615590040 B/op 130153992 allocs/op
+Benchmark_NanoId-8             1        44691198000 ns/op       4615439160 B/op 130153315 allocs/op
+Benchmark_NanoId-8             1        45224104500 ns/op       4615884520 B/op 130153948 allocs/op
+Benchmark_NanoId-8             1        44527536700 ns/op       4615485656 B/op 130153593 allocs/op
+Benchmark_NanoId-8             1        45062377100 ns/op       4615403208 B/op 130153168 allocs/op
+Benchmark_NanoId-8             1        44639632800 ns/op       4615354408 B/op 130152970 allocs/op
+PASS
+ok      github.com/ccpwcn/kgo   460.940s
+```
+结论：
+- 每秒钟可以生成大约100万个不重复的NanoID，已经能够满足99%的业务场景了，毫无压力。
+- 多次测试，无论是时间开销、还是内存开销，都很均衡，说明非常稳定，这代表在生产环境运行时的高可靠。
+- 在性能测试中，加入了`sync.Map`用于保证海量的ID仍然是唯一的，不会重复。在实践中，如果没有这个，生成ID的速度可以更快，后台服务中如果是热代码，还能再快。
+
+顺便执行命令`go tool pprof .\nanoid_cpuprofile`看一下前面的步骤生成的 cpuprofile，未发现性能问题。`runtime.scanobject`耗时较多，是因为并行测试生成了很多ID，导致对象扫描较多，这是正常的，不是性能瓶颈。
 
 # 鸣谢
 UUID的实现借鉴学习了 https://github.com/google/uuid
