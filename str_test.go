@@ -381,3 +381,116 @@ func TestEnglishWordsCount(t *testing.T) {
 		}
 	}
 }
+
+func TestIsNotBlank(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "hello_word",
+			args: args{s: "hello_word"},
+			want: true,
+		},
+		{
+			name: "hello word",
+			args: args{s: "hello word"},
+			want: true,
+		},
+		{
+			name: "<SPACE>",
+			args: args{s: " "},
+			want: false,
+		},
+		{
+			name: "<SPACE2>",
+			args: args{s: "  "},
+			want: false,
+		},
+		{
+			name: "<SPACE3>",
+			args: args{s: "   "},
+			want: false,
+		},
+		{
+			name: "<RETURN>",
+			args: args{s: "\n"},
+			want: false,
+		},
+		{
+			name: "<RETURN2>",
+			args: args{s: "\n\n"},
+			want: false,
+		},
+		{
+			name: "<RETURN3>",
+			args: args{s: "\n\n"},
+			want: false,
+		},
+		{
+			name: "<RT>",
+			args: args{s: "\r"},
+			want: false,
+		},
+		{
+			name: "<RT2>",
+			args: args{s: "\r\r"},
+			want: false,
+		},
+		{
+			name: "<RT3>",
+			args: args{s: "\r\r\r"},
+			want: false,
+		},
+		{
+			name: "<RETURN_ENTER>",
+			args: args{s: "\r\n"},
+			want: false,
+		},
+		{
+			name: "\\ufeff",
+			args: args{s: "\ufeff"},
+			want: false,
+		},
+		{
+			name: "\\u202a",
+			args: args{s: "\u202a"},
+			want: false,
+		},
+		{
+			name: "\\u0000",
+			args: args{s: "\u0000"},
+			want: false,
+		},
+		{
+			name: "\\u3164",
+			args: args{s: "\u3164"},
+			want: false,
+		},
+		{
+			name: "\\u2800",
+			args: args{s: "\u2800"},
+			want: false,
+		},
+		{
+			name: "\\u180e",
+			args: args{s: "\u180e"},
+			want: false,
+		},
+		{
+			name: "<TAB>",
+			args: args{s: "\t"},
+			want: false,
+		},
+	}
+	for _, test := range tests {
+		actual := IsNotBlank(test.args.s)
+		if actual != test.want {
+			t.Errorf("测试 %s，预期 %v，实际值：%v", test.name, test.want, actual)
+		}
+	}
+}

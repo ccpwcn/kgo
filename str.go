@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 	"unsafe"
 )
@@ -238,4 +239,33 @@ func EnglishWordsCount(s string) int {
 	// 使用正则表达式匹配英文单词
 	words := englishWordsPattern.FindAllString(s, -1)
 	return len(words)
+}
+
+// IsBlank 判断字符串是否为空
+func IsBlank(s string) bool {
+	if len(strings.TrimSpace(s)) == 0 {
+		return true
+	}
+	for _, c := range s {
+		if !isBlankChar(c) {
+			return false
+		}
+	}
+	return true
+}
+
+// IsNotBlank 判断字符串是否不为空
+func IsNotBlank(s string) bool {
+	return !IsBlank(s)
+}
+
+// isBlankChar 判断字符是否为空白字符
+func isBlankChar(c rune) bool {
+	return unicode.IsSpace(c) ||
+		c == '\ufeff' ||
+		c == '\u202a' ||
+		c == '\u0000' ||
+		c == '\u3164' ||
+		c == '\u2800' ||
+		c == '\u180e'
 }
