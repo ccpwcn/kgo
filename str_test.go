@@ -494,3 +494,29 @@ func TestIsNotBlank(t *testing.T) {
 		}
 	}
 }
+
+func TestMaxLen(t *testing.T) {
+	type args struct {
+		ss []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{name: "zero-1", args: args{ss: []string{}}, want: 0},
+		{name: "zero-2", args: args{ss: []string{""}}, want: 0},
+		{name: "zero-3", args: args{ss: []string{"", ""}}, want: 0},
+		{name: "one", args: args{ss: []string{"hello", "world"}}, want: 5},
+		{name: "two", args: args{ss: []string{"hello", "world", "hello world"}}, want: 11},
+		{name: "three", args: args{ss: []string{"hello", "world", "hello world", "hello world hello world"}}, want: 23},
+		{name: "four", args: args{ss: []string{"hello", "world", "hello world", "hello world hello world", "hello world hello world hello world"}}, want: 35},
+		{name: "five", args: args{ss: []string{"hello", "world", "hello world", "hello world hello world", "hello world hello world hello world", "hello world hello world hello world hello world"}}, want: 47},
+	}
+	for _, test := range tests {
+		actual := MaxLen(test.args.ss...)
+		if actual != test.want {
+			t.Errorf("预期 %v，实际值：%v", test.want, actual)
+		}
+	}
+}

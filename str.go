@@ -262,10 +262,21 @@ func IsNotBlank(s string) bool {
 // isBlankChar 判断字符是否为空白字符
 func isBlankChar(c rune) bool {
 	return unicode.IsSpace(c) ||
-		c == '\ufeff' ||
-		c == '\u202a' ||
-		c == '\u0000' ||
-		c == '\u3164' ||
-		c == '\u2800' ||
-		c == '\u180e'
+		c == '\ufeff' || // 字节次序标记字符
+		c == '\u202a' || // 右到左标记
+		c == '\u0000' || // 空字符
+		c == '\u3164' || // 零宽度非连接符
+		c == '\u2800' || // 零宽度空间
+		c == '\u180e' // 蒙古文格式化字符
+}
+
+// MaxLen 获取字符串列表中最大长度
+func MaxLen(strList ...string) int {
+	maxLen := 0
+	for _, str := range strList {
+		if len(str) > maxLen {
+			maxLen = len(str)
+		}
+	}
+	return maxLen
 }
