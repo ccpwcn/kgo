@@ -35,6 +35,7 @@ func SlicePagination[T any](data []T, pageSize int) (paged [][]T) {
 }
 
 // Contains 一个切片是否包含指定元素
+// 判断 data 是否包含 element
 func Contains[T any](data []T, element T) bool {
 	for _, datum := range data {
 		if reflect.DeepEqual(datum, element) {
@@ -45,6 +46,7 @@ func Contains[T any](data []T, element T) bool {
 }
 
 // ContainsAll 一个切片是否包含所有指定元素
+// 判断 data 是否包含 elements 中的所有元素
 func ContainsAll[T any](data []T, elements []T) bool {
 	for _, element := range elements {
 		if !Contains(data, element) {
@@ -55,6 +57,7 @@ func ContainsAll[T any](data []T, elements []T) bool {
 }
 
 // ContainsAny 一个切片是否包含任意指定元素
+// 判断 data 是否包含 elements 中的任意一个元素
 func ContainsAny[T any](data []T, elements []T) bool {
 	for _, element := range elements {
 		if Contains(data, element) {
@@ -65,6 +68,7 @@ func ContainsAny[T any](data []T, elements []T) bool {
 }
 
 // SameElements 两个切片是否拥有相同的元素，不考虑它们的顺序，只要元素相同即可
+// 判断 data1 和 data2 是否包含相同的元素
 func SameElements[T any](data1, data2 []T) bool {
 	if len(data1) != len(data2) {
 		return false
@@ -85,6 +89,7 @@ func SameElements[T any](data1, data2 []T) bool {
 }
 
 // Intersection 两个切片的交集
+// 返回在 s1 和 s2 中都存在的元素集合
 func Intersection[T any](s1, s2 []T) (results []T) {
 	hash := make(map[any]bool)
 	for _, elem := range s1 {
@@ -99,6 +104,7 @@ func Intersection[T any](s1, s2 []T) (results []T) {
 }
 
 // Union 两个切片的合集，如果遇到重复元素，只保留1个
+// 返回在 s1 和 s2 中存在的元素集合
 func Union[T any](s1, s2 []T) (results []T) {
 	hash := make(map[any]bool)
 	for _, elem := range s1 {
