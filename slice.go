@@ -147,3 +147,19 @@ func SplitCounter[T any](pageSize, count int) (items [][]T) {
 	}
 	return items
 }
+
+// MergeSlice 多个切片合并
+func MergeSlice[T any](sliceList ...[]T) (results []T) {
+	if len(sliceList) == 0 {
+		return
+	}
+	var totalCount = 0
+	for _, slice := range sliceList {
+		totalCount += len(slice)
+	}
+	results = make([]T, 0, totalCount)
+	for _, slice := range sliceList {
+		results = append(results, slice...)
+	}
+	return results
+}

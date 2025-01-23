@@ -339,3 +339,225 @@ func TestSplitCounter(t *testing.T) {
 		})
 	}
 }
+
+func TestMergeSlice_String(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[string]
+		mergeWant []string
+	}
+	tests := []testCase[string]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[string]{data1: []string{"1", "2", "3"}, data2: []string{"8", "10"}},
+			mergeWant: []string{"1", "2", "3", "8", "10"},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[string](tt.args.data1, tt.args.data2); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_String_Multi(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+		data3 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[string]
+		mergeWant []string
+	}
+	tests := []testCase[string]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[string]{data1: []string{"1", "2", "3"}, data2: []string{"8", "10"}, data3: []string{"10"}},
+			mergeWant: []string{"1", "2", "3", "8", "10", "10"},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[string](tt.args.data1, tt.args.data2, tt.args.data3); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_Int(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[int]
+		mergeWant []int
+	}
+	tests := []testCase[string]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[int]{data1: []int{1, 2, 3, 4}, data2: []int{5, 6, 7}},
+			mergeWant: []int{1, 2, 3, 4, 5, 6, 7},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[int](tt.args.data1, tt.args.data2); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_Int_Multi(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+		data3 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[int]
+		mergeWant []int
+	}
+	tests := []testCase[string]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[int]{data1: []int{1, 2, 3, 4}, data2: []int{5, 6, 7}, data3: []int{17, 18}},
+			mergeWant: []int{1, 2, 3, 4, 5, 6, 7, 17, 18},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[int](tt.args.data1, tt.args.data2, tt.args.data3); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_Float(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[float64]
+		mergeWant []float64
+	}
+	tests := []testCase[float64]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[float64]{data1: []float64{1.1, 2.2, 3.3}, data2: []float64{8.8}},
+			mergeWant: []float64{1.1, 2.2, 3.3, 8.8},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[float64](tt.args.data1, tt.args.data2); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_Float_Multi(t *testing.T) {
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+		data3 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[float64]
+		mergeWant []float64
+	}
+	tests := []testCase[float64]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[float64]{data1: []float64{1.1, 2.2, 3.3}, data2: []float64{8.8}, data3: []float64{18.8, 19.9, 20.1}},
+			mergeWant: []float64{1.1, 2.2, 3.3, 8.8, 18.8, 19.9, 20.1},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[float64](tt.args.data1, tt.args.data2, tt.args.data3); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_Struct(t *testing.T) {
+	type student struct {
+		name string
+		age  int
+	}
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[student]
+		mergeWant []student
+	}
+	tests := []testCase[string]{
+		{
+			name:      "TestMergeSlice_String",
+			args:      args[student]{data1: []student{{name: "s1", age: 1}, {name: "s2", age: 2}}, data2: []student{{name: "s10", age: 10}}},
+			mergeWant: []student{{name: "s1", age: 1}, {name: "s2", age: 2}, {name: "s10", age: 10}},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[student](tt.args.data1, tt.args.data2); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
+
+func TestMergeSlice_Struct_Multi(t *testing.T) {
+	type student struct {
+		name string
+		age  int
+	}
+	type args[T any] struct {
+		data1 []T
+		data2 []T
+		data3 []T
+	}
+	type testCase[T any] struct {
+		name      string
+		args      args[student]
+		mergeWant []student
+	}
+	tests := []testCase[string]{
+		{
+			name: "TestMergeSlice_String",
+			args: args[student]{
+				data1: []student{
+					{name: "s1", age: 1},
+					{name: "s2", age: 2},
+				},
+				data2: []student{
+					{name: "s10", age: 10},
+				},
+				data3: []student{
+					{name: "s100", age: 100},
+					{name: "s101", age: 101},
+				},
+			},
+			mergeWant: []student{
+				{name: "s1", age: 1},
+				{name: "s2", age: 2},
+				{name: "s10", age: 10},
+				{name: "s100", age: 100},
+				{name: "s101", age: 101},
+			},
+		},
+	}
+	for _, tt := range tests {
+		if got := MergeSlice[student](tt.args.data1, tt.args.data2, tt.args.data3); !SameElements(got, tt.mergeWant) {
+			t.Errorf("MergeSlice() = %v, want %v", got, tt.mergeWant)
+		}
+	}
+}
