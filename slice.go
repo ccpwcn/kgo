@@ -119,6 +119,70 @@ func Union[T any](s1, s2 []T) (results []T) {
 	return results
 }
 
+// ReplaceOrAppend 替换或者追加一个元素
+// s: 切片
+// e: 要替换或者追加的元素
+// fieldName: 结构体字段名，用于判断是否已存在， <strong>注意：</strong> 指定的字段必须已导出，否则不会生效）
+// 返回操作后的新切片
+func ReplaceOrAppend[T any](s []T, e T, fieldName string) []T {
+	// 获取 e 的 fieldName 字段值
+	ev := reflect.ValueOf(e)
+	if ev.Kind() == reflect.Ptr {
+		ev = ev.Elem()
+	}
+	if ev.Kind() != reflect.Struct {
+		return append(s, e) // 非结构体直接追加
+	}
+
+	field := ev.FieldByName(fieldName)
+	if !field.IsValid() || !field.CanInterface() {
+		// 字段不存在或未导出，直接返回
+		return s
+	}
+	targetValue := field.Interface()
+
+	// 遍历切片，检查是否已有相同 fieldName 的元素
+	for i, elem := range s {
+		v := reflect.ValueOf(elem)
+		if v.Kind() == reflect.Ptr {
+			v = v.Elem()
+		}
+		if v.Kind() != reflect.Struct {
+			continue
+		}
+
+		fv := v.FieldByName(fieldName)
+		if !fv.IsValid() {
+			continue
+		}
+
+		currentValue := fv.Interface()
+		if reflect.DeepEqual(currentValue, targetValue) {
+			// 复制切片，避免修改原数据
+			newSlice := make([]T, len(s))
+			copy(newSlice, s)
+			newSlice[i] = e
+			return newSlice
+		}
+	}
+
+	// 没有找到匹配项，追加
+	return append(s, e)
+}
+
+// ReplaceOrAppendFunc 替换或追加元素，使用自定义比较函数
+func ReplaceOrAppendFunc[T any](s []T, e T, isEqual func(a, b T) bool) []T {
+	for i, elem := range s {
+		if isEqual(elem, e) {
+			newSlice := make([]T, len(s))
+			copy(newSlice, s)
+			newSlice[i] = e
+			return newSlice
+		}
+	}
+	return append(s, e)
+}
+
 // Diff 两个切片的差集，以第一个参数s1为基准，即：返回在s1中存在 且 在s2中不存在的元素集合
 func Diff[T any](s1, s2 []T) (results []T) {
 	hash := make(map[any]bool)
