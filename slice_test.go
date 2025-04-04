@@ -561,3 +561,219 @@ func TestMergeSlice_Struct_Multi(t *testing.T) {
 		}
 	}
 }
+
+func TestReplaceOrAppend_IntField(t *testing.T) {
+	type student struct {
+		Id   int64
+		Name string
+	}
+	type args[T any] struct {
+		data []T
+		obj  T
+	}
+	type testCase struct {
+		name string
+		args args[student]
+		want []student
+	}
+	tests := []testCase{
+		{
+			name: "TestReplaceOrAppend_IntField",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+				},
+				obj: student{Id: 1, Name: "s1_1"},
+			},
+			want: []student{
+				{Id: 1, Name: "s1_1"},
+				{Id: 2, Name: "s2"},
+			},
+		},
+		{
+			name: "TestReplaceOrAppend_IntField2",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+					{Id: 3, Name: "s3"},
+				},
+				obj: student{Id: 3, Name: "s3_3"},
+			},
+			want: []student{
+				{Id: 1, Name: "s1"},
+				{Id: 2, Name: "s2"},
+				{Id: 3, Name: "s3_3"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		if got := ReplaceOrAppend[student](tt.args.data, tt.args.obj, "Id"); !SameElements(got, tt.want) {
+			t.Errorf("ReplaceOrAppend() = %v, want %v", got, tt.want)
+		}
+	}
+}
+
+func TestReplaceOrAppend_StringField(t *testing.T) {
+	type student struct {
+		Id   int64
+		Name string
+	}
+	type args[T any] struct {
+		data []T
+		obj  T
+	}
+	type testCase struct {
+		name string
+		args args[student]
+		want []student
+	}
+	tests := []testCase{
+		{
+			name: "TestReplaceOrAppend_StringField",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+				},
+				obj: student{Id: 11, Name: "s1"},
+			},
+			want: []student{
+				{Id: 11, Name: "s1"},
+				{Id: 2, Name: "s2"},
+			},
+		},
+		{
+			name: "TestReplaceOrAppend_StringField2",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+					{Id: 3, Name: "s3"},
+				},
+				obj: student{Id: 33, Name: "s3"},
+			},
+			want: []student{
+				{Id: 1, Name: "s1"},
+				{Id: 2, Name: "s2"},
+				{Id: 33, Name: "s3"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		if got := ReplaceOrAppend[student](tt.args.data, tt.args.obj, "Name"); !SameElements(got, tt.want) {
+			t.Errorf("ReplaceOrAppend() = %v, want %v", got, tt.want)
+		}
+	}
+}
+
+func TestReplaceOrAppendFunc_IntField(t *testing.T) {
+	type student struct {
+		Id   int64
+		Name string
+	}
+	type args[T any] struct {
+		data []T
+		obj  T
+	}
+	type testCase struct {
+		name string
+		args args[student]
+		want []student
+	}
+	tests := []testCase{
+		{
+			name: "TestReplaceOrAppend_IntField",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+				},
+				obj: student{Id: 1, Name: "s1_1"},
+			},
+			want: []student{
+				{Id: 1, Name: "s1_1"},
+				{Id: 2, Name: "s2"},
+			},
+		},
+		{
+			name: "TestReplaceOrAppend_IntField2",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+					{Id: 3, Name: "s3"},
+				},
+				obj: student{Id: 3, Name: "s3_3"},
+			},
+			want: []student{
+				{Id: 1, Name: "s1"},
+				{Id: 2, Name: "s2"},
+				{Id: 3, Name: "s3_3"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		if got := ReplaceOrAppendFunc[student](tt.args.data, tt.args.obj, func(a, b student) bool {
+			return a.Id == b.Id
+		}); !SameElements(got, tt.want) {
+			t.Errorf("ReplaceOrAppend() = %v, want %v", got, tt.want)
+		}
+	}
+}
+
+func TestReplaceOrAppendFunc_StringField(t *testing.T) {
+	type student struct {
+		Id   int64
+		Name string
+	}
+	type args[T any] struct {
+		data []T
+		obj  T
+	}
+	type testCase struct {
+		name string
+		args args[student]
+		want []student
+	}
+	tests := []testCase{
+		{
+			name: "TestReplaceOrAppend_StringField",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+				},
+				obj: student{Id: 11, Name: "s1"},
+			},
+			want: []student{
+				{Id: 11, Name: "s1"},
+				{Id: 2, Name: "s2"},
+			},
+		},
+		{
+			name: "TestReplaceOrAppend_StringField2",
+			args: args[student]{
+				data: []student{
+					{Id: 1, Name: "s1"},
+					{Id: 2, Name: "s2"},
+					{Id: 3, Name: "s3"},
+				},
+				obj: student{Id: 33, Name: "s3"},
+			},
+			want: []student{
+				{Id: 1, Name: "s1"},
+				{Id: 2, Name: "s2"},
+				{Id: 33, Name: "s3"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		if got := ReplaceOrAppendFunc[student](tt.args.data, tt.args.obj, func(a, b student) bool {
+			return a.Name == b.Name
+		}); !SameElements(got, tt.want) {
+			t.Errorf("ReplaceOrAppend() = %v, want %v", got, tt.want)
+		}
+	}
+}
