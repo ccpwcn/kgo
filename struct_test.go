@@ -80,7 +80,7 @@ func TestPickStructsField(t *testing.T) {
 		},
 		{
 			Id:    3,
-			Name:  "tree",
+			Name:  "three",
 			Score: 3.3,
 		},
 	}
@@ -103,7 +103,7 @@ func TestPickStructsField(t *testing.T) {
 			name:           "PickStructsStringFieldCase",
 			elements:       users,
 			usingFieldName: "Name",
-			exceptedName:   []string{"one,two,three"},
+			exceptedName:   []string{"one", "two", "three"},
 		},
 		{
 			name:           "JoinStructsFloatFieldCase",
