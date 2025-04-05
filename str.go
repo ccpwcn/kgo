@@ -104,8 +104,8 @@ func MaskChineseName(name string) (masked string) {
 //
 // 示例2：
 //
-//	name := "张一二"
-//	MaskChineseNameEx(name, 0, utf8.RuneCountInString(name)-1) // "*一二" 左边保留0个字符、右边保留所有字符少1个，达到对姓氏脱敏的目的
+//	Name := "张一二"
+//	MaskChineseNameEx(Name, 0, utf8.RuneCountInString(Name)-1) // "*一二" 左边保留0个字符、右边保留所有字符少1个，达到对姓氏脱敏的目的
 func MaskChineseNameEx(name string, left, right int) (masked string) {
 	// 将中文字符串转换为rune数组，方便进行字符级别的操作
 	runes := []rune(name)

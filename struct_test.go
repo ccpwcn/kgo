@@ -96,13 +96,13 @@ func TestPickStructsField(t *testing.T) {
 		{
 			name:           "PickStructsIntFieldCase",
 			elements:       users,
-			usingFieldName: "id",
+			usingFieldName: "Id",
 			exceptedId:     []int{1, 2, 3},
 		},
 		{
 			name:           "PickStructsStringFieldCase",
 			elements:       users,
-			usingFieldName: "name",
+			usingFieldName: "Name",
 			exceptedName:   []string{"one,two,three"},
 		},
 		{

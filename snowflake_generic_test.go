@@ -125,7 +125,7 @@ func Benchmark_GenericSnowflake_Concurrent_Id(b *testing.B) {
 							b.Errorf("ID %+v 重复了", id)
 						} else {
 							buffer.Store(id, 1)
-							// b.Logf("ID %+v\n", id)
+							// b.Logf("ID %+v\n", Id)
 						}
 					}
 				})
@@ -164,7 +164,7 @@ func Benchmark_GenericSnowflake_Concurrent_Id_String(b *testing.B) {
 							b.Errorf("ID %+v 重复了", id)
 						} else {
 							buffer.Store(id, 1)
-							// b.Logf("ID %+v\n", id)
+							// b.Logf("ID %+v\n", Id)
 						}
 					}
 				})
