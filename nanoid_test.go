@@ -41,7 +41,7 @@ func TestNormalNanoID_CheckDuplicate(t *testing.T) {
 		if id, err := NanoId(); err != nil {
 			t.Error(err)
 		} else if ids[id] {
-			t.Error("duplicate id", id)
+			t.Error("duplicate Id", id)
 		}
 	}
 }
@@ -53,7 +53,7 @@ func TestNormalNanoID_CheckDuplicate5(t *testing.T) {
 		if id, err := NanoId(); err != nil {
 			t.Error(err)
 		} else if ids[id] {
-			t.Error("duplicate id", id)
+			t.Error("duplicate Id", id)
 		}
 	}
 }
@@ -65,7 +65,7 @@ func TestNormalNanoIDCheck_Duplicate10(t *testing.T) {
 		if id, err := NanoId(); err != nil {
 			t.Error(err)
 		} else if ids[id] {
-			t.Error("duplicate id", id)
+			t.Error("duplicate Id", id)
 		}
 	}
 }
@@ -77,7 +77,7 @@ func TestNormalNanoIDCheck_Duplicate100(t *testing.T) {
 		if id, err := NanoId(); err != nil {
 			t.Error(err)
 		} else if ids[id] {
-			t.Error("duplicate id", id)
+			t.Error("duplicate Id", id)
 		}
 	}
 }
@@ -91,7 +91,7 @@ func Benchmark_NanoId(b *testing.B) {
 				for pb.Next() {
 					id := MustNanoId()
 					if _, ok := buffer.Load(id); ok {
-						b.Errorf("duplicated id %s", id)
+						b.Errorf("duplicated Id %s", id)
 					}
 					buffer.Store(id, true)
 				}
