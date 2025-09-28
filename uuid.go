@@ -24,6 +24,7 @@ func init() {
 	newRandomFromPool()
 }
 
+// Uuid 生成一个标准的UUID（V4版本）
 func Uuid() string {
 	uuid := newRandomFromPool()
 	var buf [36]byte
@@ -31,6 +32,7 @@ func Uuid() string {
 	return B2S(buf[:])
 }
 
+// SimpleUuid 生成一个简易版的UUID（V4版本），中间没有连接线，更短，效率更高。
 func SimpleUuid() string {
 	uuid := newRandomFromPool()
 	var buf [32]byte
