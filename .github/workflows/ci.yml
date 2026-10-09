@@ -1,0 +1,66 @@
+name: CI
+
+# 触发时机：推送到主要分支、发起 PR、以及手动触发
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同一分支的新推送会取消尚在进行的旧运行，节省额度
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (${{ matrix.os }}, go${{ matrix.go-version }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      # -race 依赖 cgo，显式开启以免受 runner 默认值影响
+      CGO_ENABLED: "1"
+    strategy:
+      fail-fast: false
+      matrix:
+        # 两个主流操作系统都测，实现"同一份代码跨平台验证"
+        os: [ ubuntu-latest, windows-latest ]
+        # 1.18 = go.mod 声明的最低版本（保证库对声明版本兼容）；
+        # stable = 当前最新稳定版（保证在新版 Go 上也正常）
+        go-version: [ '1.18', 'stable' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+          # 本库无第三方依赖，且仓库未必提交 go.sum，故关闭依赖缓存以免报错
+          cache: false
+
+      # Windows 的 -race 需要 cgo 的 C 编译器；runner 未预装 mingw，这里安装 gcc。
+      # （Visual Studio 自带 clang/cl 不能用于 -race，必须用 mingw-w64 gcc。）
+      - name: Install MinGW-w64 gcc (Windows, for -race/cgo)
+        if: runner.os == 'Windows'
+        run: choco install mingw -y --no-progress
+
+      - name: Show environment
+        run: |
+          go version
+          go env GOOS GOARCH CGO_ENABLED
+
+      - name: Build
+        run: go build ./...
+
+      # vet 为阻断式质量门禁（此前两处既有告警已修复：dir.go 无缓冲 signal channel、
+      # snowflake.go unreachable return）。注意：stable 版 Go 若引入新的 vet 检查，可能在此暴露新问题。
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test (with race detector)
+        run: go test -race -count=1 ./...

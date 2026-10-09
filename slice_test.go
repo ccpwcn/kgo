@@ -322,18 +322,27 @@ func TestSplitCounter(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		pageCount := test.args.count/test.args.pageSize + 1
+		test := test
 		t.Run(test.name, func(t *testing.T) {
-			items := SplitCounter[string](test.args.pageSize, test.args.count)
+			count, pageSize := test.args.count, test.args.pageSize
+			// 预期页数：向上取整
+			pageCount := count / pageSize
+			remainder := count % pageSize
+			if remainder != 0 {
+				pageCount++
+			}
+			items := SplitCounter[string](pageSize, count)
 			if len(items) != pageCount {
-				t.Errorf("len(items) = %v, want 3", len(items))
+				t.Errorf("len(items) = %v, want %v", len(items), pageCount)
 			}
 			for i, item := range items {
-				if i+1 < pageCount && cap(item) != test.args.pageSize {
-					t.Errorf("cap(item) = %v, want %v", cap(item), test.args.pageSize)
+				expectedCap := pageSize
+				// 最后一段且不能整除时，容量为余数
+				if i == pageCount-1 && remainder != 0 {
+					expectedCap = remainder
 				}
-				if i+1 == pageCount && cap(item) != test.args.count%test.args.pageSize {
-					t.Errorf("cap(item) = %v, want %v", cap(item), test.args.count%test.args.pageSize)
+				if cap(item) != expectedCap {
+					t.Errorf("cap(items[%d]) = %v, want %v", i, cap(item), expectedCap)
 				}
 			}
 		})
