@@ -14,5 +14,10 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Profiling / benchmark artifacts (go test -cpuprofile / -memprofile 等产物)
+*_cpuprofile
+*_memprofile
+*.prof
+
 # Dependency directories (remove the comment below to include it)
 # vendor/

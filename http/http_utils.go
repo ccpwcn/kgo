@@ -3,10 +3,11 @@ package http
 import (
 	"bytes"
 	"fmt"
-	"github.com/ccpwcn/kgo"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/ccpwcn/kgo"
 )
 
 type RequestType int
@@ -102,7 +103,7 @@ func (hc *MyHttpClient) Get() (resBody []byte, err error) {
 	}
 	req, err := http.NewRequest(http.MethodGet, hc.url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("创建HTTP POST请求对象出错：%w", err)
+		return nil, fmt.Errorf("创建HTTP GET请求对象出错：%w", err)
 	}
 	hc.processHeader(req)
 	return hc.sendRequest(client, req)
@@ -119,7 +120,7 @@ func (hc *MyHttpClient) processHeader(req *http.Request) {
 func (hc *MyHttpClient) sendRequest(client http.Client, req *http.Request) ([]byte, error) {
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("发起POST请求出错：%w", err)
+		return nil, fmt.Errorf("发起HTTP请求出错：%w", err)
 	}
 	defer func(Body io.ReadCloser) {
 		err1 := Body.Close()
@@ -131,7 +132,7 @@ func (hc *MyHttpClient) sendRequest(client http.Client, req *http.Request) ([]by
 	}(resp.Body)
 	respBytes, err := io.ReadAll(resp.Body)
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("请求失败，状态码 %d", resp.StatusCode)
+		return nil, fmt.Errorf("HTTP请求失败，状态码 %d", resp.StatusCode)
 	}
 	return respBytes, err
 }

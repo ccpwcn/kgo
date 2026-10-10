@@ -110,6 +110,22 @@ func MaskChineseNameEx(name string, left, right int) (masked string) {
 	// 将中文字符串转换为rune数组，方便进行字符级别的操作
 	runes := []rune(name)
 	size := len(runes)
+	if size == 0 {
+		return ""
+	}
+	// 对 left、right 进行边界修正，避免切片越界或 make 负长度 panic
+	if left < 0 {
+		left = 0
+	}
+	if right < 0 {
+		right = 0
+	}
+	if left > size {
+		left = size
+	}
+	if left+right > size {
+		right = size - left
+	}
 	leftRunes := runes[:left]
 	rightRunes := runes[size-right:]
 	middleRunes := make([]rune, size-len(leftRunes)-len(rightRunes))

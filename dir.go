@@ -27,9 +27,10 @@ func GetWorkDir() string {
 }
 
 // IsExists 文件或目录是否存在
+// 只有在 stat 成功（err == nil）时才认为存在；权限不足等其它错误不应被误判为“存在”。
 func IsExists(filename string) bool {
 	_, err := os.Lstat(filename)
-	return !os.IsNotExist(err)
+	return err == nil
 }
 
 // MustRead 读取一个存在的文件的完整内容，注意：使用这个函数之前，请你自行确定文件不会很大，否则可能会对你的程序的性能和资源开销造成影响
@@ -46,7 +47,8 @@ func DirectTempFile(extName string) (file *os.File, err error) {
 	file, err = os.CreateTemp(dir, "kgo_temp_*"+extName)
 	// 程序退出时删除这个临时文件，对于服务器端程序来说，这个机制是有意义的，对于客户端一般普通应用程序来说，这个机制没什么用
 	go func() {
-		quit := make(chan os.Signal)
+		// signal.Notify 要求使用带缓冲的 channel，否则信号可能在无人接收时被丢弃
+		quit := make(chan os.Signal, 1)
 		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 		// 同步阻塞，静待退出信号
 		<-quit

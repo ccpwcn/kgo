@@ -1,10 +1,10 @@
 package kgo
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -32,64 +32,57 @@ type snowflake struct {
 }
 
 var (
-	instanceMutex     sync.Mutex // 实例锁
-	snowflakeInstance *snowflake // 实例
+	instanceMutex     sync.Mutex   // 实例初始化锁
+	snowflakeInstance atomic.Value // 存储 *snowflake 实例，保证并发读写安全（消除 data race）
 )
 
-// InitSnowflake 初始化雪花算法，只需要在你的程序启动或初始化时调用一次
+// snowflakeOf 并发安全地读取当前雪花实例，未初始化时返回 nil
+func snowflakeOf() *snowflake {
+	v := snowflakeInstance.Load()
+	if v == nil {
+		return nil
+	}
+	return v.(*snowflake)
+}
+
+// InitSnowflake 初始化雪花算法，只需要在你的程序启动或初始化时调用一次。
+// 只会生效一次：已初始化后，后续调用（即使参数不同）将被忽略并返回 nil。
+// workerId、dataCenterId 越界时返回 error（不再 panic）。
 func InitSnowflake(workerId int64, dataCenterId int64) (err error) {
 	if workerId < 0 || workerId > workerIdMax {
-		panic(fmt.Sprintf("workId must be between 0 and %d", workerIdMax-1))
+		return fmt.Errorf("workerId must be between 0 and %d", workerIdMax)
 	}
 	if dataCenterId < 0 || dataCenterId > datacenterIdMax {
-		return errors.New(fmt.Sprintf("dataCenterId must be between 0 and %d", datacenterIdMax-1))
+		return fmt.Errorf("dataCenterId must be between 0 and %d", datacenterIdMax)
 	}
-	if snowflakeInstance == nil {
-		instanceMutex.Lock()
-		if snowflakeInstance != nil {
-			instanceMutex.Unlock()
-			return nil
-		}
-		defer instanceMutex.Unlock()
-		snowflakeInstance = &snowflake{workerId: workerId, dataCenterId: dataCenterId}
-		return nil
-	} else {
+	instanceMutex.Lock()
+	defer instanceMutex.Unlock()
+	if snowflakeInstance.Load() != nil {
 		return nil
 	}
+	snowflakeInstance.Store(&snowflake{workerId: workerId, dataCenterId: dataCenterId})
+	return nil
 }
 
 func SnowflakeId() int64 {
-	if snowflakeInstance == nil {
-		instanceMutex.Lock()
-		if snowflakeInstance != nil {
-			instanceMutex.Unlock()
-			return snowflakeInstance.nextVal()
-		}
-		defer instanceMutex.Unlock()
-		return snowflakeInstance.nextVal()
-	} else {
-		return snowflakeInstance.nextVal()
+	s := snowflakeOf()
+	if s == nil {
+		panic("snowflake 尚未初始化，请先调用 InitSnowflake")
 	}
+	return s.nextVal()
 }
 
 func GetSnowflakeId[T string | int64]() (id T) {
-	var v interface{}
-	if snowflakeInstance == nil {
-		instanceMutex.Lock()
-		if snowflakeInstance != nil {
-			instanceMutex.Unlock()
-			v = snowflakeInstance.nextVal()
-		}
-		defer instanceMutex.Unlock()
-		v = snowflakeInstance.nextVal()
-	} else {
-		v = snowflakeInstance.nextVal()
+	s := snowflakeOf()
+	if s == nil {
+		panic("snowflake 尚未初始化，请先调用 InitSnowflake")
 	}
+	v := s.nextVal()
 	t := reflect.TypeOf(id)
 	if t.Kind() == reflect.String {
 		reflect.ValueOf(&id).Elem().SetString(fmt.Sprintf("%+v", v))
 	} else if t.Kind() == reflect.Int64 {
-		reflect.ValueOf(&id).Elem().SetInt(v.(int64))
+		reflect.ValueOf(&id).Elem().SetInt(v)
 	}
 	return id
 }
@@ -115,7 +108,6 @@ func (s *snowflake) nextVal() int64 {
 	t := now - epoch
 	if t > timestampMax {
 		panic(fmt.Sprintf("epoch must be between 0 and %d", timestampMax-1))
-		return 0
 	}
 	s.timestamp = now
 	r := t<<timestampShift | (s.dataCenterId << dataCenterIdShift) | (s.workerId << workerIdShift) | (s.sequence)

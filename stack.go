@@ -2,7 +2,6 @@ package kgo
 
 import (
 	"errors"
-	"reflect"
 )
 
 type Stack[T any] struct {
@@ -21,8 +20,9 @@ func (s *Stack[T]) Push(element T) {
 
 // Pop 从栈中移除并返回栈顶元素
 func (s *Stack[T]) Pop() (T, error) {
+	var zero T
 	if len(s.elements) == 0 {
-		return reflect.Zero(reflect.TypeOf(new(T))).Interface().(T), errors.New("stack is empty")
+		return zero, errors.New("stack is empty")
 	}
 	element := s.elements[len(s.elements)-1]
 	s.elements = s.elements[:len(s.elements)-1]
@@ -31,8 +31,9 @@ func (s *Stack[T]) Pop() (T, error) {
 
 // Peek 返回栈顶元素但不移除它
 func (s *Stack[T]) Peek() (T, error) {
+	var zero T
 	if len(s.elements) == 0 {
-		return reflect.Zero(reflect.TypeOf(new(T))).Interface().(T), errors.New("stack is empty")
+		return zero, errors.New("stack is empty")
 	}
 	return s.elements[len(s.elements)-1].(T), nil
 }

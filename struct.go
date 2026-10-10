@@ -10,8 +10,8 @@ import (
 //
 // 注意：第二个参数指定的字段，要存在且已导出，否则结果可能不是预期的样子。
 func JoinStructsField[T interface{}](elements []T, fieldName string) (s string) {
-	// 只处理导出了的字段
-	if fieldName[0] < 'A' || fieldName[0] > 'Z' {
+	// 只处理导出了的字段（fieldName 为空时直接返回，避免 fieldName[0] 越界 panic）
+	if fieldName == "" || fieldName[0] < 'A' || fieldName[0] > 'Z' {
 		return ""
 	}
 	if elements == nil || len(elements) == 0 {
@@ -44,8 +44,8 @@ func JoinStructsField[T interface{}](elements []T, fieldName string) (s string) 
 //
 // 请注意：第二个参数指定的字段，要存在且已导出，否则结果可能不是预期的样子。
 func PickStructsField[T interface{}, FT comparable](elements []T, fieldName string) (s []FT) {
-	// 只处理导出了的字段
-	if fieldName[0] < 'A' || fieldName[0] > 'Z' {
+	// 只处理导出了的字段（fieldName 为空时直接返回，避免 fieldName[0] 越界 panic）
+	if fieldName == "" || fieldName[0] < 'A' || fieldName[0] > 'Z' {
 		return []FT{}
 	}
 	if elements == nil || len(elements) == 0 {
@@ -79,8 +79,8 @@ func PickStructsField[T interface{}, FT comparable](elements []T, fieldName stri
 //
 // T是结构体类型，KT是字段类型，字段类型必须是可比较的，即：comparable（因为它是Map的Key）
 func SliceGroupBy[T any, KT comparable](data []T, fieldName string) map[KT][]T {
-	// 只处理导出了的字段，如果给定的字段没有导出，那么什么也不做
-	if fieldName[0] < 'A' || fieldName[0] > 'Z' {
+	// 只处理导出了的字段，如果给定的字段没有导出，那么什么也不做（fieldName 为空时同样直接返回，避免越界 panic）
+	if fieldName == "" || fieldName[0] < 'A' || fieldName[0] > 'Z' {
 		return map[KT][]T{}
 	}
 	if data == nil || len(data) == 0 {
@@ -135,8 +135,10 @@ func CopyFields[SRC any, DST any](src SRC, ignore ...string) (dst DST) {
 		if !df.IsExported() {
 			continue
 		}
-		// 类型不匹配，不进行复制
-		if srcFieldValue.Kind() != dstFieldValue.Kind() {
+		// 类型不兼容，不进行复制
+		// 仅 Kind 相同不足以安全 Set：如 int 与 int64、或不同命名类型可能 Kind 相同但类型不同，
+		// reflect.Value.Set 会 panic。用 AssignableTo 判断，只有可赋值时才复制。
+		if !srcFieldValue.Type().AssignableTo(dstFieldValue.Type()) {
 			continue
 		}
 		// 复制值

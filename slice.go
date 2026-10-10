@@ -67,16 +67,19 @@ func ContainsAny[T any](data []T, elements []T) bool {
 	return false
 }
 
-// SameElements 两个切片是否拥有相同的元素，不考虑它们的顺序，只要元素相同即可
+// SameElements 两个切片是否拥有相同的元素，不考虑它们的顺序，只要元素相同即可（重复元素的出现次数也需一致）
 // 判断 data1 和 data2 是否包含相同的元素
 func SameElements[T any](data1, data2 []T) bool {
 	if len(data1) != len(data2) {
 		return false
 	}
+	// used 标记 data2 中已被匹配的元素，避免重复元素被重复匹配
+	used := make([]bool, len(data2))
 	for _, datum1 := range data1 {
 		found := false
-		for _, datum2 := range data2 {
-			if reflect.DeepEqual(datum1, datum2) {
+		for j, datum2 := range data2 {
+			if !used[j] && reflect.DeepEqual(datum1, datum2) {
+				used[j] = true
 				found = true
 				break
 			}
@@ -90,8 +93,9 @@ func SameElements[T any](data1, data2 []T) bool {
 
 // Intersection 两个切片的交集
 // 返回在 s1 和 s2 中都存在的元素集合
-func Intersection[T any](s1, s2 []T) (results []T) {
-	hash := make(map[any]bool)
+// 注意：T 约束为 comparable，因为需要用作 map 的键；不可比较类型（切片/map/函数等）会在编译期被拒绝，避免运行时 panic。
+func Intersection[T comparable](s1, s2 []T) (results []T) {
+	hash := make(map[T]bool, len(s1))
 	for _, elem := range s1 {
 		hash[elem] = true
 	}
@@ -105,8 +109,9 @@ func Intersection[T any](s1, s2 []T) (results []T) {
 
 // Union 两个切片的合集，如果遇到重复元素，只保留1个
 // 返回在 s1 和 s2 中存在的元素集合
-func Union[T any](s1, s2 []T) (results []T) {
-	hash := make(map[any]bool)
+// 注意：T 约束为 comparable（需用作 map 键），不可比较类型会在编译期被拒绝。
+func Union[T comparable](s1, s2 []T) (results []T) {
+	hash := make(map[T]bool, len(s1)+len(s2))
 	for _, elem := range s1 {
 		hash[elem] = true
 	}
@@ -114,7 +119,7 @@ func Union[T any](s1, s2 []T) (results []T) {
 		hash[elem] = true
 	}
 	for elem := range hash {
-		results = append(results, elem.(T))
+		results = append(results, elem)
 	}
 	return results
 }
@@ -184,8 +189,9 @@ func ReplaceOrAppendFunc[T any](s []T, e T, isEqual func(a, b T) bool) []T {
 }
 
 // Diff 两个切片的差集，以第一个参数s1为基准，即：返回在s1中存在 且 在s2中不存在的元素集合
-func Diff[T any](s1, s2 []T) (results []T) {
-	hash := make(map[any]bool)
+// 注意：T 约束为 comparable（需用作 map 键），不可比较类型会在编译期被拒绝。
+func Diff[T comparable](s1, s2 []T) (results []T) {
+	hash := make(map[T]bool, len(s2))
 	for _, elem := range s2 {
 		hash[elem] = true
 	}
@@ -202,12 +208,18 @@ func SplitCounter[T any](pageSize, count int) (items [][]T) {
 	if pageSize <= 0 || count <= 0 {
 		return
 	}
-	for page := 1; page <= count/pageSize+1; page++ {
-		if page <= count/pageSize {
-			items = append(items, make([]T, 0, pageSize))
-		} else {
-			items = append(items, make([]T, 0, count%pageSize))
+	pageCount := count / pageSize
+	remainder := count % pageSize
+	if remainder != 0 {
+		pageCount++
+	}
+	for page := 0; page < pageCount; page++ {
+		size := pageSize
+		// 最后一段且不能整除时，容量为余数
+		if page == pageCount-1 && remainder != 0 {
+			size = remainder
 		}
+		items = append(items, make([]T, 0, size))
 	}
 	return items
 }

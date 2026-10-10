@@ -54,14 +54,21 @@ func (s *Set[T]) ToArray() []T {
 	return items
 }
 
-func (s *Set[T]) MarshalText() (data []byte, err error) {
+// MarshalJSON 实现 json.Marshaler。
+// 之前用 MarshalText 承载 JSON 是错误的：encoding/json 会把 TextMarshaler 的输出
+// 当作一个字符串再转义，导致 Set 嵌套在结构体中被序列化成 "[1,2,3]"（字符串）
+// 而非真正的 JSON 数组 [1,2,3]。改用 json.Marshaler 后输出为原生数组。
+func (s *Set[T]) MarshalJSON() (data []byte, err error) {
 	return json.Marshal(s.ToArray())
 }
 
-func (s *Set[T]) UnmarshalText(data []byte) (err error) {
+// UnmarshalJSON 实现 json.Unmarshaler，从 JSON 数组反序列化回 Set。
+func (s *Set[T]) UnmarshalJSON(data []byte) (err error) {
 	var items []T
-	err = json.Unmarshal(data, &items)
+	if err = json.Unmarshal(data, &items); err != nil {
+		return err
+	}
 	s.m = make(map[T]struct{})
 	s.Add(items...)
-	return err
+	return nil
 }
