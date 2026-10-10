@@ -3,11 +3,24 @@ package kgo
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
 
 // 本文件覆盖并发正确性与本地缓存的行为边界，配合 `go test -race` 使用。
+
+// waitUntil 在超时前轮询条件，避免 -race / CI 调度抖动下固定 Sleep 误判。
+func waitUntil(timeout time.Duration, cond func() bool) bool {
+	deadline := time.Now().Add(timeout)
+	for time.Now().Before(deadline) {
+		if cond() {
+			return true
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	return cond()
+}
 
 // --- SimpleLocalCache 行为边界 ---
 
@@ -79,16 +92,16 @@ func TestCache_CapacityLimit(t *testing.T) {
 func TestCache_TtlOverwriteNotDeletedByStaleTimer(t *testing.T) {
 	lc := NewLocalCache(10)
 	_ = lc.SetWithTtl("k", "v1", 50*time.Millisecond)
-	_ = lc.SetWithTtl("k", "v2", 400*time.Millisecond) // 覆盖，取消旧定时器
-	time.Sleep(120 * time.Millisecond)                 // 旧定时器(50ms)此刻本应已触发
+	_ = lc.SetWithTtl("k", "v2", 200*time.Millisecond) // 覆盖，取消旧定时器
+	// 超过旧 TTL 后键仍应存在
+	time.Sleep(80 * time.Millisecond)
 	if !lc.Exists("k") {
 		t.Fatalf("旧定时器误删了覆盖后的值")
 	}
 	if v, _ := lc.Get("k"); v.(string) != "v2" {
 		t.Errorf("期望取到 v2，实际 %v", v)
 	}
-	time.Sleep(400 * time.Millisecond) // 等待新定时器到期
-	if lc.Exists("k") {
+	if !waitUntil(500*time.Millisecond, func() bool { return !lc.Exists("k") }) {
 		t.Errorf("新 TTL 到期后应被删除")
 	}
 }
@@ -186,7 +199,7 @@ func TestConcurrent_Snowflake_Unique(t *testing.T) {
 			for i := 0; i < per; i++ {
 				id := SnowflakeId()
 				if _, loaded := seen.LoadOrStore(id, struct{}{}); loaded {
-					dup++
+					atomic.AddInt64(&dup, 1)
 				}
 			}
 		}()
@@ -209,7 +222,7 @@ func TestConcurrent_Uuid_Unique(t *testing.T) {
 			for i := 0; i < per; i++ {
 				id := Uuid()
 				if _, loaded := seen.LoadOrStore(id, struct{}{}); loaded {
-					dup++
+					atomic.AddInt64(&dup, 1)
 				}
 			}
 		}()
@@ -232,7 +245,7 @@ func TestConcurrent_UuidV7_Unique(t *testing.T) {
 			for i := 0; i < per; i++ {
 				id := UuidV7()
 				if _, loaded := seen.LoadOrStore(id, struct{}{}); loaded {
-					dup++
+					atomic.AddInt64(&dup, 1)
 				}
 			}
 		}()

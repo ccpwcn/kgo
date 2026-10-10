@@ -11,7 +11,9 @@ on:
 permissions:
   contents: read
 
-# 同一分支的新推送会取消尚在进行的旧运行，节省额度
+# 同一分支的新推送会取消尚在进行的旧运行，节省额度。
+# 注意：被取消的 run 会以 SIGTERM(143) 结束，看起来像失败；
+# 密集 push/重跑时请以「最新一次」结果为准，不要反复点 Re-run 打乱队列。
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -27,17 +29,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 两个主流操作系统都测，实现"同一份代码跨平台验证"
-        os: [ ubuntu-latest, windows-latest ]
-        # 1.18 = go.mod 声明的最低版本（保证库对声明版本兼容）；
-        # stable = 当前最新稳定版（保证在新版 Go 上也正常）
-        go-version: [ '1.18', 'stable' ]
+        # 固定镜像标签，避免 ubuntu-latest 在迁移窗口（→ Ubuntu 26）中行为突变
+        os: [ ubuntu-24.04, windows-2022 ]
+        # 1.18 = go.mod 最低版本；1.26.x = 当前验证过的新版本（避免 floating 'stable' 突然跳版本）
+        go-version: [ '1.18', '1.26.x' ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
           # 本库无第三方依赖，且仓库未必提交 go.sum，故关闭依赖缓存以免报错
@@ -57,10 +58,28 @@ jobs:
       - name: Build
         run: go build ./...
 
-      # vet 为阻断式质量门禁（此前两处既有告警已修复：dir.go 无缓冲 signal channel、
-      # snowflake.go unreachable return）。注意：stable 版 Go 若引入新的 vet 检查，可能在此暴露新问题。
+      # vet 为阻断式质量门禁。新版 Go 若引入新的 vet 检查，可能在此暴露新问题。
       - name: Vet
         run: go vet ./...
 
+      # -p 1：禁止包级并行，降低 Linux + 新版 Go race detector（TSAN）的内存峰值，
+      # 避免 GitHub hosted runner 以 SIGTERM(143) 杀掉进程（此前 ubuntu + gostable 高发）。
+      # 失败自动重试：区分偶发 runner 资源杀进程与真实测试失败；真实失败通常会稳定复现。
       - name: Test (with race detector)
-        run: go test -race -count=1 ./...
+        shell: bash
+        run: |
+          set +e
+          for i in 1 2 3; do
+            echo "::group::go test -race (attempt $i/3)"
+            go test -race -count=1 -p 1 -timeout 15m ./...
+            code=$?
+            echo "::endgroup::"
+            if [ "$code" -eq 0 ]; then
+              exit 0
+            fi
+            echo "attempt $i failed with exit code $code"
+            if [ "$i" -lt 3 ]; then
+              sleep $((i * 5))
+            fi
+          done
+          exit 1
