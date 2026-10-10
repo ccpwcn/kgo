@@ -140,11 +140,8 @@ func Test_LocalCacheSetWithTtl(t *testing.T) {
 	lc := NewLocalCache(10)
 	if err := lc.SetWithTtl(key, value, 100*time.Millisecond); err != nil {
 		t.Errorf("LocalCache SetWithTtl error %+v", err)
-	} else {
-		time.Sleep(150 * time.Millisecond)
-		if lc.Exists(key) {
-			t.Errorf("LocalCache SetWithTtl failure")
-		}
+	} else if !waitUntil(500*time.Millisecond, func() bool { return !lc.Exists(key) }) {
+		t.Errorf("LocalCache SetWithTtl failure")
 	}
 }
 
@@ -156,11 +153,8 @@ func Test_LocalCacheSetWithTime(t *testing.T) {
 	lc := NewLocalCache(10)
 	if err := lc.SetWithTime(key, value, time.Now().Add(100*time.Millisecond)); err != nil {
 		t.Errorf("LocalCache SetWithTime error %+v", err)
-	} else {
-		time.Sleep(150 * time.Millisecond)
-		if lc.Exists(key) {
-			t.Errorf("LocalCache SetWithTime failure")
-		}
+	} else if !waitUntil(500*time.Millisecond, func() bool { return !lc.Exists(key) }) {
+		t.Errorf("LocalCache SetWithTime failure")
 	}
 }
 
@@ -176,10 +170,7 @@ func Test_LocalCacheSize(t *testing.T) {
 		t.Errorf("LocalCache set error %+v", err)
 	} else if lc.Size() != 1 {
 		t.Errorf("LocalCache size failure")
-	} else {
-		time.Sleep(150 * time.Millisecond)
-		if lc.Size() != 0 {
-			t.Errorf("LocalCache size failure")
-		}
+	} else if !waitUntil(500*time.Millisecond, func() bool { return lc.Size() == 0 }) {
+		t.Errorf("LocalCache size failure")
 	}
 }
