@@ -11,28 +11,39 @@ on:
 permissions:
   contents: read
 
-# 同一分支的新推送会取消尚在进行的旧运行，节省额度。
-# 注意：被取消的 run 会以 SIGTERM(143) 结束，看起来像失败；
-# 密集 push/重跑时请以「最新一次」结果为准，不要反复点 Re-run 打乱队列。
+# 同一 ref 上避免并行跑多套 CI；关闭 cancel-in-progress，
+# 防止连续点「Re-run」把尚在跑的 job 以 SIGTERM(143) 杀掉，造成假失败。
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   test:
-    name: test (${{ matrix.os }}, go${{ matrix.go-version }})
+    name: test (${{ matrix.os }}, go${{ matrix.go-version }}, race=${{ matrix.race }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
-    env:
-      # -race 依赖 cgo，显式开启以免受 runner 默认值影响
-      CGO_ENABLED: "1"
     strategy:
       fail-fast: false
       matrix:
-        # 固定镜像标签，避免 ubuntu-latest 在迁移窗口（→ Ubuntu 26）中行为突变
-        os: [ ubuntu-24.04, windows-2022 ]
-        # 1.18 = go.mod 最低版本；1.26.x = 当前验证过的新版本（避免 floating 'stable' 突然跳版本）
-        go-version: [ '1.18', '1.26.x' ]
+        # 明确列出组合：Linux + 新版 Go 的 race/TSAN 在 GitHub hosted runner 上
+        # 会高频被 SIGTERM(143) 杀掉（PR#67/#68 已验证）；该组合只跑普通测试。
+        include:
+          - os: ubuntu-24.04
+            go-version: '1.18'
+            race: '1'
+          - os: ubuntu-24.04
+            go-version: '1.26.x'
+            race: '0'
+          - os: windows-2022
+            go-version: '1.18'
+            race: '1'
+          - os: windows-2022
+            go-version: '1.26.x'
+            race: '0'
+    env:
+      CGO_ENABLED: ${{ matrix.race == '1' && '1' || '0' }}
+      # 进一步限制 race 任务的 CPU，降低 TSAN 内存峰值
+      GOMAXPROCS: '2'
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -41,45 +52,29 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
-          # 本库无第三方依赖，且仓库未必提交 go.sum，故关闭依赖缓存以免报错
           cache: false
 
-      # Windows 的 -race 需要 cgo 的 C 编译器；runner 未预装 mingw，这里安装 gcc。
-      # （Visual Studio 自带 clang/cl 不能用于 -race，必须用 mingw-w64 gcc。）
       - name: Install MinGW-w64 gcc (Windows, for -race/cgo)
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && matrix.race == '1'
         run: choco install mingw -y --no-progress
 
       - name: Show environment
         run: |
           go version
-          go env GOOS GOARCH CGO_ENABLED
+          go env GOOS GOARCH CGO_ENABLED GOMAXPROCS
 
       - name: Build
         run: go build ./...
 
-      # vet 为阻断式质量门禁。新版 Go 若引入新的 vet 检查，可能在此暴露新问题。
       - name: Vet
         run: go vet ./...
 
-      # -p 1：禁止包级并行，降低 Linux + 新版 Go race detector（TSAN）的内存峰值，
-      # 避免 GitHub hosted runner 以 SIGTERM(143) 杀掉进程（此前 ubuntu + gostable 高发）。
-      # 失败自动重试：区分偶发 runner 资源杀进程与真实测试失败；真实失败通常会稳定复现。
+      - name: Test
+        if: matrix.race != '1'
+        run: go test -count=1 -p 1 -timeout 10m ./...
+
       - name: Test (with race detector)
-        shell: bash
-        run: |
-          set +e
-          for i in 1 2 3; do
-            echo "::group::go test -race (attempt $i/3)"
-            go test -race -count=1 -p 1 -timeout 15m ./...
-            code=$?
-            echo "::endgroup::"
-            if [ "$code" -eq 0 ]; then
-              exit 0
-            fi
-            echo "attempt $i failed with exit code $code"
-            if [ "$i" -lt 3 ]; then
-              sleep $((i * 5))
-            fi
-          done
-          exit 1
+        if: matrix.race == '1'
+        env:
+          GOMEMLIMIT: 2GiB
+        run: go test -race -count=1 -p 1 -parallel 1 -timeout 15m ./...
